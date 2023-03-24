@@ -1,23 +1,20 @@
-
 im = imread("./media/ferrari.JPG");
+im = double(im)./255;
+imwrite(uint8(255.*im), "./out/1.ferrari.jpg");
 
-imshow(im);
-% max(im(:))
 
 % 1.1 Map pixels to 0-1 range and linearize image back
-im = (double(im)./255).^2.2;
-imshow(im, []);
-imwrite(im, "./out/ferrari_lin.JPG");
+im_lin = im.^2.2;
+imwrite(uint8(255.*im_lin), "./out/1.ferrari_lin.jpg");
 
 
 % 1.2 Increase brightness
-im = im.*1.5;
-imshow(im, []);
-imwrite(im, "./out/ferrari_lin_bright.JPG");
+im_bri = im.*2;
+imwrite(uint8(255.*im_bri), "./out/1.ferrari_bri.jpg");
 
 
 % 1.3 Enhance contrast using exponential function
-im = im.^0.5;
-imshow(im, []);
-imwrite(im, "./out/ferrari_lin_bright_contrast.JPG");
+im_con = im.^0.7;
+imwrite(uint8(255.*im_con), "./out/1.ferrari_con.jpg");
 
+imshow([im, im_lin,im_bri,im_con], []);
