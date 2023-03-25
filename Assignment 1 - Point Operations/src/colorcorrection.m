@@ -17,4 +17,4 @@ im_gwa = im.*gain;
 imwrite(uint8(255.*im_gwa), "./out/2.wb_gwa.jpg");
 
 
-imshow([im,im_pxcorr,im_gwa])
+imshow([im, im_pxcorr, im_gwa])
