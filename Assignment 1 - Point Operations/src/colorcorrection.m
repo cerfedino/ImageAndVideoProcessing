@@ -3,7 +3,9 @@ im = (double(im)./255);
 imwrite(uint8(255.*im), "./out/2.wb.jpg");
 
 channelmean = mean(mean(im))
+
 % 2.1 Pixel-based correction
+figure()
 imshow(im);
 coords = int32(ginput(1));
 px_color = im(coords(2), coords(1), 1:3);
@@ -16,5 +18,5 @@ gain = 0.5./channelmean;
 im_gwa = im.*gain;
 imwrite(uint8(255.*im_gwa), "./out/2.wb_gwa.jpg");
 
-
+figure()
 imshow([im, im_pxcorr, im_gwa])

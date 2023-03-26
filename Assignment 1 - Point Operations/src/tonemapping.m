@@ -16,5 +16,5 @@ imwrite(uint8(255.*im_bri), "./out/1.ferrari_bri.jpg");
 % 1.3 Enhance contrast using exponential function
 im_con = im.^0.7;
 imwrite(uint8(255.*im_con), "./out/1.ferrari_con.jpg");
-
+figure()
 imshow([im, im_lin,im_bri,im_con], []);
