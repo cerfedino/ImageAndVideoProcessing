@@ -1,5 +1,5 @@
 .PHONY: $(MAKECMDGOALS)
-FILES := src/tonemapping.m src/colorcorrection.m src/histograms.m src/chromakey.m
+FILES := src/tonemapping.m src/colorcorrection.m src/chromakey.m src/bonus.m src/histograms.m 
 
 QUIT=$(if $(filter 1,$(quit)),quit;)
 
