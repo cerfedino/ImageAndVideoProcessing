@@ -6,9 +6,9 @@ a4 = imread("./media/bonus/a4.jpg");
 a5 = imread("./media/bonus/a5.jpg");
 a6 = imread("./media/bonus/a6.jpg");
 
-hue_deviation = 0.00005;
-saturation_deviation = 0.00005;
-brightness_deviation = 0.06;
+hue_deviation = 0.001;
+saturation_deviation = 0.001;
+brightness_deviation = 0.057;
 
 cleanplate_hsv = rgb2hsv(cleanplate);
 cleanplate_mask = getDiffMask(cleanplate_hsv, cleanplate_hsv, hue_deviation, saturation_deviation, brightness_deviation);
@@ -24,7 +24,13 @@ white_bg = ones(size(cleanplate)).*255;
 
 figure()
 imshow([cleanplate, a1, a2, a3, a4, a5, a6;
-    white_bg.*cleanplate_mask, white_bg.*a1_mask, white_bg.*a2_mask, white_bg.*a3_mask, white_bg.*a4_mask, white_bg.*a5_mask, white_bg.*a6_mask ])
+    white_bg.*cleanplate_mask, ...
+    white_bg.*a1_mask, ...
+    white_bg.*a2_mask, ...
+    white_bg.*a3_mask, ...
+    white_bg.*a4_mask, ...
+    white_bg.*a6_mask ...
+    white_bg.*a5_mask, ])
 title("Images and their masks")
 saveas(gcf,'out/8.images_masks.png')
 
@@ -38,7 +44,7 @@ a6 = double(a6)./255;
 cleanplate = double(cleanplate)./255;
 
 figure()
-imshow([comp(a6,a6_mask, comp(a5, a5_mask, comp(a4, a4_mask, comp(a3, a3_mask, comp(a2, a2_mask, comp(a1, a1_mask, cleanplate))))))],[])
+imshow([comp(a6,a6_mask, comp(a4, a4_mask, comp(a3, a3_mask, comp(a2, a2_mask, comp(a1, a1_mask, comp(a5, a5_mask, cleanplate))))))],[])
 title("Comped image")
 saveas(gcf,'out/8.im_comped.png')
 
