@@ -9,9 +9,7 @@ blue_distribution = compute_distribution(im(:,:,3));
 
 figure()
 hold on
-plot(red_distribution, 'r')
-plot(green_distribution, 'g')
-plot(blue_distribution, 'b')
+plot(red_distribution, 'r'); plot(green_distribution, 'g'); plot(blue_distribution, 'b')
 title("Color channel distribution of 'ferrari.JPG'")
 hold off
 
@@ -20,8 +18,8 @@ saveas(gcf,'out/3.histogram.png')
 
 %% Exercise 4.1 - Global histogram equalization
 imhsv = rgb2hsv(im);
-% Cumulative distribution function of the image histogram
 
+% Cumulative distribution function of the image histogram
 [equalized_channel, original_brightness_distribution] = global_histogram_equalization(imhsv);
 
 figure(); imshow(hsv2rgb(imhsv)); title("Original image")
@@ -43,10 +41,10 @@ saveas(gcf,'out/4.1.ferrari_globalnorm_hist.png')
 TILENO = 4; % Divides the image into nxn = n^2 tiles
 imloceq = local_histogram_equalization(rgb2hsv(im), TILENO);
 
-[normalized_brightness_distribution, ~ ] = imhist(imloceq(:,:,3));
+[equalized_brightness_distribution, ~ ] = imhist(imloceq(:,:,3));
 figure(); imshow(hsv2rgb(imloceq)); title(sprintf("Equalized image (local - %d x %d tiles)", TILENO, TILENO));
 saveas(gcf,'out/4.2.ferrari_localnorm.png')
-figure(); area(normalized_brightness_distribution); title("Equalized intensity histogram (global)")
+figure(); area(equalized_brightness_distribution); title("Equalized intensity histogram (global)")
 saveas(gcf,'out/4.2.ferrari_localnorm_hist.png')
 
 %% Exercise 4.3 BONUS - Locally adaptive histogram equalization
@@ -54,18 +52,17 @@ saveas(gcf,'out/4.2.ferrari_localnorm_hist.png')
 TILESIZE = 40; % The moving window has size TILESIZE px x TILESIZE px
 imlocadapteq = locally_adaptive_histogram_equalization(rgb2hsv(im), TILESIZE);
 
-[normalized_brightness_distribution, ~ ] = imhist(imlocadapteq(:,:,3));
+[equalized_brightness_distribution, ~ ] = imhist(imlocadapteq(:,:,3));
 figure(); imshow(hsv2rgb(imlocadapteq)); title(sprintf("Equalized image (locally adaptive - %dpx x %dpx tile size)", TILESIZE, TILESIZE));
 saveas(gcf,'out/4.3.ferrari_locallyadaptivenorm.png')
-figure(); area(normalized_brightness_distribution); title("Equalized intensity histogram (global)")
+figure(); area(equalized_brightness_distribution); title("Equalized intensity histogram (global)")
 saveas(gcf,'out/4.3.ferrari_locallyadaptivenorm_hist.png')
 
 
-
-% TODO: Can I use the built in function for Exercise 4 ?
 function [distribution] = compute_distribution(channel)
     distribution = cell2mat(arrayfun(@(x) sum(sum(channel==x)), 0:255,'UniformOutput',false));
 end
+% Performs global histogram equalization on an image in HSV color space
 function [equalized_channel, original_brightness_distribution] = global_histogram_equalization(imhsv)
     channel = imhsv(:,:,3);
     % Cumulative distribution function of the image histogram
@@ -76,6 +73,8 @@ function [equalized_channel, original_brightness_distribution] = global_histogra
     equalized_channel = cdf(round(channel*255+1));
 end
 
+% Performs local histogram equalization on an image in HSV color space
+% Divides the image into TILENO x TILENO tiles
 function [imhsv_equalized] = local_histogram_equalization(imhsv, TILENO)
     imhsv_equalized = imhsv;
     im_size = size(imhsv_equalized);
@@ -91,7 +90,8 @@ function [imhsv_equalized] = local_histogram_equalization(imhsv, TILENO)
     end
 end
 
-
+% Performs locally adaptive histogram equalization on an image in HSV color space
+% Each pixel is equalized by taking a fixed size window around it.
 function [imhsv_equalized] = locally_adaptive_histogram_equalization(imhsv, TILESIZE)
     imhsv_equalized = imhsv;
     im_size = size(imhsv_equalized);
@@ -99,7 +99,9 @@ function [imhsv_equalized] = locally_adaptive_histogram_equalization(imhsv, TILE
     for y = 1:im_size(1)
         fprintf("\rProcessing row %d/%d", y, im_size(1))
         for x = 1:im_size(2)
+            % Coordinates of the top-left corner of the moving window.
             imageUB = round(max([[y x] - (TILESIZE/2); 1 1]));
+            % Coordinates of the bottom-right corner of the moving window.
             imageLB = round(min([[y x] + (TILESIZE/2); im_size(1:2)]));
             tile = imhsv_equalized(imageUB(1):imageLB(1), imageUB(2):imageLB(2),:);
             [equalized_tile, ~ ] = global_histogram_equalization(tile);

@@ -11,13 +11,13 @@ saturation_deviation = 0.001;
 brightness_deviation = 0.057;
 
 cleanplate_hsv = rgb2hsv(cleanplate);
-cleanplate_mask = getDiffMask(cleanplate_hsv, cleanplate_hsv, hue_deviation, saturation_deviation, brightness_deviation);
-a1_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a1), hue_deviation, saturation_deviation, brightness_deviation);
-a2_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a2), hue_deviation, saturation_deviation, brightness_deviation);
-a3_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a3), hue_deviation, saturation_deviation, brightness_deviation);
-a4_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a4), hue_deviation, saturation_deviation, brightness_deviation);
-a5_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a5), hue_deviation, saturation_deviation, brightness_deviation);
-a6_mask = getDiffMask(cleanplate_hsv, rgb2hsv(a6), hue_deviation, saturation_deviation, brightness_deviation);
+cleanplate_mask = medfilt2(getDiffMask(cleanplate_hsv, cleanplate_hsv, hue_deviation, saturation_deviation, brightness_deviation));
+a1_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a1), hue_deviation, saturation_deviation, brightness_deviation));
+a2_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a2), hue_deviation, saturation_deviation, brightness_deviation));
+a3_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a3), hue_deviation, saturation_deviation, brightness_deviation));
+a4_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a4), hue_deviation, saturation_deviation, brightness_deviation));
+a5_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a5), hue_deviation, saturation_deviation, brightness_deviation));
+a6_mask = medfilt2(getDiffMask(cleanplate_hsv, rgb2hsv(a6), hue_deviation, saturation_deviation, brightness_deviation));
 
 
 white_bg = ones(size(cleanplate)).*255;
@@ -35,16 +35,16 @@ title("Images and their masks")
 saveas(gcf,'out/8.images_masks.png')
 
 
-a1 = double(a1)./255;
-a2 = double(a2)./255;
-a3 = double(a3)./255;
-a4 = double(a4)./255;
-a5 = double(a5)./255;
-a6 = double(a6)./255;
-cleanplate = double(cleanplate)./255;
+a1 = im2double(a1);
+a2 = im2double(a2);
+a3 = im2double(a3);
+a4 = im2double(a4);
+a5 = im2double(a5);
+a6 = im2double(a6);
+cleanplate = im2double(cleanplate);
 
 figure()
-imshow([comp(a6,a6_mask, comp(a4, a4_mask, comp(a3, a3_mask, comp(a2, a2_mask, comp(a1, a1_mask, comp(a5, a5_mask, cleanplate))))))],[])
+imshow(comp(a6,a6_mask, comp(a4, a4_mask, comp(a3, a3_mask, comp(a2, a2_mask, comp(a1, a1_mask, comp(a5, a5_mask, cleanplate)))))),[])
 title("Comped image")
 saveas(gcf,'out/8.im_comped.png')
 
