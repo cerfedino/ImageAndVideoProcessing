@@ -2,5 +2,3 @@
 
 ## Authors
 - Albert Cerfeda
-
-## Solved exercises

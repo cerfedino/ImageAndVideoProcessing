@@ -1,0 +1,39 @@
+% Math
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{float}
+
+% Insert dummy text
+\usepackage{lipsum}  
+% Allows to use caption*
+\usepackage{caption}
+% Scalable subfigures and subcaptions
+\usepackage{subcaption} 
+% Code syntax highlighting
+\usepackage{minted}
+% Hyperlinks
+\usepackage{hyperref}
+% Customize page layout
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+% Page headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}%
+
+% includegraphics
+\usepackage{graphicx}
+
+
+
+
+\newcommand{\bmat}[1]{
+   \ensuremath{
+   \begin{bmatrix}
+       #1
+   \end{bmatrix}
+}}
+
