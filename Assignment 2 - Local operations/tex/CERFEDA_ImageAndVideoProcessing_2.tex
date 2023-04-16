@@ -57,10 +57,104 @@
 
 \section{Spatial Filtering [2 points]}
 
+\textbf{Maximum and minimum values of the convoluted image.}
+
+\begin{wrapfigure}{r}{0.25\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{fig/1.1.jpg}
+    \label{fig:1.1}
+\end{wrapfigure}
+We know that that each pixel is encoded with in a 6-bit integer format. That is, each pixel has $2^6$ possible values and the minimum and maximum values representable are $0$ and $2^6-1=63$ respectively.\\
+To compute the max and min values of the convoluted image, let us consider the case where the filter is getting applied to the corners of the image. Let us employ the padding technique for dealing with pixels outside the bounds of the image (i.e we add artificial pixels with value $0$).\\
+If we consider an image where every pixel has value $63$ as a result of the convolution the pixel in the top-left corner will have a value of $(0)*63+(3)*63+(3)*63+(1)*63 = 441$  while the pixel in the bottom-right corner will have a value of $(-1)*63+(-2)*63+(-2)*63+(0)*63 = -315$.
+
+\textbf{Post-filtering pixel transformation.}\\
+Knowing that each convoluted pixel ranges from $-315$ to $441$, we can apply a linear transformation to the pixel values. By mapping each pixel intensity by mapping it $x \mapsto (x+315)(\frac{63}{441-(-315)})$ we will map the pixel values to the range $[0,63]$.
+
+\textbf{Separability of filter $H$}\\
+
+
 \section{Combining linear operations [2 points]}
+We know that the unsharp masking operation can be represented with the following formula:
+\begin{figure}[h!]
+$$g_{\text {sharp }}=f+\gamma\left(f-h_{\text {blur }} \star f\right)$$
+\caption{Unsharp masking operation}
+\label{fig:2.1unsharpformula}
+\end{figure}
+i.e we add back to the image the details obtained by subtracting the blurred image from the original image.\\
 
+To compute the kernel reponsible for blurring the image, we can use the Gaussian filter. The gaussian filter computes a weighted average of the pixels in the neighborhood. The weights fall off as the distance increases from the center pixel, according to the gaussian distribution. We can control such gaussian distribution by changing the value of the standard deviation $\sigma$ (i.e control the amount of blur). The size for the kernel matters: to give a good approximated representation of the gaussian function we choose the kernel size to be $4\sigma +1$.\\
+
+We notice how we can translate the unsharp masking operation [Figure \ref{fig:2.1unsharpformula}] into a linear operation between kernels [Figure \ref{fig:2.2}]. Notice how the kernel for the original image is just a zero matrix with a $1$ in the center. The kernel for the blurred image is the gaussian filter. The difference between the two kernels is the image details.\\
+Parameter $\gamma$ serves as a control parameter for determining the amount of sharpening.\\The code for computing the unsharp masking kernel is rather simple [Figure \ref{fig:2.3code}]. The results are shown in [Figure \ref{fig:2.4}].
+\begin{figure}[h!]
+    \begin{subfigure}[b]{\linewidth}
+    $$\bmat{\input{fig/out/2.identity_f.tex}} + \gamma  \underbrace{\pmat{\underbrace{\bmat{\input{fig/out/2.identity_f.tex}}}_{\text{Original pixel}} - \underbrace{\bmat{\input{fig/out/2.blur_f.tex}}}_{\text{Blurred pixel}}}}_{\text{Image details}} $$
+    \caption[]{Kernel computation for unsharp masking.\\$\sigma=1, \gamma = 8$}
+    \end{subfigure}
+    \begin{subfigure}[b]{\linewidth}
+        $$\bmat{\input{fig/out/2.unsharp_filter.tex}} $$
+        \caption[]{Resulting unsharp masking kernel}
+    \end{subfigure}
+    \caption{Computing the unsharp masking kernel}
+    \label{fig:2.2}
+\end{figure}
+\begin{figure}[h!]
+    \begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
+% ...
+% Create gaussian blur filter with a gamma parameter of 1
+sigma = 1;
+gamma = 5;
+size = 4*sigma + 1;
+blur_f = fspecial('gaussian', size, sigma);
+% Identity kernel - leaves the pixel untouched
+identity_f = zeros(size);
+identity_f(ceil(size/2), ceil(size/2)) = 1;
+% Unsharp filter
+unsharp_filter = identity_f + gamma.*(identity_f - blur_f);
+im_sharp = imfilter(im, unsharp_filter);
+\end{minted}
+\caption{Matlab code computing the unsharp masking kernel.}
+\label{fig:2.3code}
+\end{figure}
+
+\begin{figure}[h!]
+    \begin{subfigure}[b]{0.5\linewidth}
+        \centering
+    \includegraphics[width=0.7\linewidth]{fig/out/2.im.jpg}
+    \caption{Original image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5\linewidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{fig/out/2.im_sharp.jpg}
+        \caption{Sharpened image}
+    \end{subfigure}
+    \caption{Unsharp masking results.}
+    \label{fig:2.4}
+\end{figure}
 \section{Morphological operations A [2 points]}
-
+Morphological operations are a set of operations that are applied to binary images, in order to alter the represented shapes.\\
+The exercise requires to choose one structuring element and perform multiple morphological operations on the binary in order to obtain the desired result.\\
+By choosing structural element $c)$ we can obtain the desired result by performing erosion and dilation in succession. Results are shown in Figure \ref{fig:3}:
+\begin{figure}[h!]
+    \begin{subfigure}[b]{0.33\linewidth}
+        \centering
+    \includegraphics[width=.5\linewidth]{fig/3.0.png}
+    \caption{Original binary image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\linewidth}
+        \centering
+        \includegraphics[width=.5\linewidth]{fig/3.1.png}
+        \caption{Erosion}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.33\linewidth}
+        \centering
+        \includegraphics[width=.5\linewidth]{fig/3.2.png}
+        \caption{Erosion + Dilation}
+    \end{subfigure}
+    \caption{Morphological operations using structuring element c)}
+    \label{fig:3}
+\end{figure}
 \section{Morphological operations B [2 points]}
 
 \section{Linear Motion Blur Filter [4 points]}
