@@ -158,6 +158,71 @@ By choosing structural element $c)$ we can obtain the desired result by performi
 \section{Morphological operations B [2 points]}
 
 \section{Linear Motion Blur Filter [4 points]}
+The gaussian function is the same on every axis i.e it falls off equally in every direction. However, in the case of motion blur, each axis can have a separate gaussian function. This allows us to mimic the effect of motion blur.\\
+Additionally, we want to provide the angle in degrees for which we rotate the kernel. Let us implement function \mintinline{matlab}{gaussianKernel(sigma,angle)} for computing the anisotropic gaussian kernel.
+\begin{figure}[h!]
+\begin{minted}[ frame=lines, framesep=2mm, linenos, fontsize=\small ]{matlab} 
+function res = gaussianKernel(sigma, angle)
+    if size(sigma) == 1
+        sigma = [sigma, sigma];
+    end
+    angle = deg2rad(angle);
+    kernelsize = 4*sigma+1;
+    kernelsize = abs([cos(angle) sin(angle)]) .* kernelsize(1) + abs([sin(angle) cos(angle)]) .* kernelsize(2);
+
+    [X,Y] = meshgrid(1:kernelsize(2),1:kernelsize(1));
+    X = X - kernelsize(2)/2; 
+    Y = Y - kernelsize(1)/2;
+    Xg = X * cos(angle) - Y * sin(angle);
+    Yg = X * sin(angle) + Y * cos(angle);
+
+    res = exp(-(Xg.^2/(2*sigma(2)^2) + Yg.^2/(2*sigma(1)^2))) ;
+    res = res / sum(res(:));
+end
+\end{minted}
+\caption{Matlab function for computing an anisotropic gaussian kernel.}
+\end{figure}
+
+We can call the function like so:
+\vspace*{-0.5cm}
+\begin{minted}[frame=lines, framesep=2mm]{matlab} 
+gaussianKernel([10, 1], -45)
+\end{minted}
+\vspace*{-0.5cm}
+The function will return a gaussian kernel with $\sigma^y=10, \sigma^x=1,\theta=-45\degree$ i.e a standard deviation of $10$ in the $y$ direction and $1$ in the $x$ direction. Finally the kernel will be rotated by $-45$ degrees. [Results are shown in Figure \ref{fig:5.3}]\\\\
+A regular isotropic gaussian kernel with $\sigma=5$ can be obtained in the following way [Results are shown in Figure \ref{fig:5.2}]:
+\vspace*{-0.5cm}
+\begin{minted}[frame=lines, framesep=2mm]{matlab} 
+gaussianKernel(5, 0)
+\end{minted}
+The function derives the optimal kernel size for the given $\theta,\sigma^x\text{ and }\sigma^y$. It first creates a non-rotated kernel with size $\bmat{4*\sigma^x+1 & 4*\sigma^y+1}$ after which a "bounding box" containing the rotated kernel is created. This bounding box is then afterwards populated with the kernel values.\\
+\vspace*{-0.5cm}
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.28\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/5.im.jpg}
+        \phantom{\includegraphics[width=.4\linewidth]{fig/out/5.blur_filter.jpg}}
+        \caption{Original image\\$\sigma=0$}
+        \label{fig:5.1}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.28\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/5.im_blur.jpg}
+        \includegraphics[width=.4\linewidth]{fig/out/5.blur_filter.jpg}
+        \caption{Regular isotropic gaussian blur\\$\sigma=5$}
+        \label{fig:5.2}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.28\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/5.im_motionblur.jpg}
+        \includegraphics[width=.4\linewidth]{fig/out/5.motionblur_filter.jpg}
+        \caption{Anisotropic gaussian blur\\$\sigma^y=10, \sigma^x=1,\theta=-45\degree$}
+        \label{fig:5.3}
+    \end{subfigure}
+    \caption{Gaussian kernel comparison}
+    \label{fig:5}
+\end{figure}
 
 \section{Iterative filtering [4 points]}
 
