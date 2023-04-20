@@ -256,10 +256,10 @@ When inspecting an image obtained through iterative filtering with bilateral fil
 \begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
 % ...
 % Edge preserving bilateral filtering
-im_bigbilat = imbilatfilt(im, 0.12, 6);
-im_bigbilat2 = im;
+im_bilat = imbilatfilt(im, 0.12, 6);
+im_bilat2 = im;
 for i = 1:45
-    im_bigbilat2 = imbilatfilt(im_bigbilat2, 0.012, 0.6);
+    im_bilat2 = imbilatfilt(im_bilat2, 0.012, 0.6);
 end
 \end{minted}
 \vspace*{-0.5cm}
@@ -273,12 +273,12 @@ end
     \end{subfigure}
     \begin{subfigure}[b]{0.325\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{fig/out/6.im_bigbilat.jpg}
+        \includegraphics[width=\linewidth]{fig/out/6.im_bilat.jpg}
         \caption{\mintinline{matlab}{imbilatfilt(im,0.12,6)}}
     \end{subfigure}
     \begin{subfigure}[b]{0.325\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{fig/out/6.im_bigbilat2.jpg}
+        \includegraphics[width=\linewidth]{fig/out/6.im_bilat2.jpg}
         \caption{45x \mintinline{matlab}{imbilatfilt(im,0.012,0.6)}}
         \label{fig:6.3}
     \end{subfigure}
@@ -303,14 +303,14 @@ Let us implement the code for performing such stylization on image \verb|delicat
 \vspace*{-1cm}
 \begin{minted}[frame=lines, framesep=2mm]{matlab}
 % 1. Find edges using Canny algorithm
-im_bibilat = imbilatfilt(im, 0.9, 6);
-edges = edge(rgb2gray(im_bibilat), 'canny');
+im_bilat = imbilatfilt(im, 0.9, 6);
+edges = edge(rgb2gray(im_bilat), 'canny');
 
 % 2. Dilate edges
 edges = imdilate(edges, strel('disk', 2));
 
 % 3. Use the edges as a mask to stylize the image
-im_stylized = im_bibilat.*~edges;
+im_stylized = im_bilat.*~edges;
 \end{minted}
 Notice how the Canny\footnote{Canny edge detection: Uses linear filtering with a Gaussian kernel to smooth noise and then computes the edge strength and direction for each pixel in the smoothed image. [Sources \href{https://indiantechwarrior.com/canny-edge-detection-for-image-processing/}{indiantechwarrior.com}, \href{https://ch.mathworks.com/help/images/ref/edge.html}{mathworks.com}]} algorithm has been used for computing the edges of the image. In my experience using the Canny algorithm yields the best results, as it tends to group regions of similar color values together, resulting in the desired cartoonish effect.
 \end{document}
