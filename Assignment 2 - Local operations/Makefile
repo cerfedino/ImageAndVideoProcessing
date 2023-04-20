@@ -1,5 +1,5 @@
 .PHONY: $(MAKECMDGOALS)
-FILES := src/unsharpmasking.m src/anisotropicGaussian.m src/iterativeFiltering.m
+FILES := src/unsharpmasking.m src/anisotropicGaussian.m src/iterativeFiltering.m src/imageStylization.m
 
 QUIT=$(if $(filter 1,$(quit)),quit;)
 
