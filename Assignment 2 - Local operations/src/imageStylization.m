@@ -14,4 +14,4 @@ imwrite(im2uint8(im), "./out/6.1.im.jpg");
 imwrite(im2uint8(im_bilat), "./out/6.1.im_bilat.jpg");
 imwrite(im2uint8(gray2rgb(edges, im)), "./out/6.1.im_bilat_edges.jpg");
 imwrite(im2uint8(im_stylized), "./out/6.1.im_stylized.jpg");
-imshow([im, gray2rgb(edges, im), im_stylized], []);
+imshow([im, im_bilat, gray2rgb(edges, im), im_stylized], []);

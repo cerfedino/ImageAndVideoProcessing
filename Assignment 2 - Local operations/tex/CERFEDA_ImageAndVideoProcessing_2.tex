@@ -12,7 +12,7 @@
 \newcommand\assignment{Assignment 2 - Local Operations}
 
 \newcommand\subject{Image \& Video Processing}
-\newcommand\documentdate{2 April 2023}
+\newcommand\documentdate{20 April 2023}
 
 % Title content
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,7 +80,7 @@ We know that the unsharp masking operation can be represented with the following
 $$g_{\text {sharp }}=f+\gamma\left(f-h_{\text {blur }} \star f\right)$$
 \caption{Unsharp masking operation}
 \label{fig:2.1unsharpformula}
-\end{figure}
+\end{figure}\\
 i.e we add back to the image the details obtained by subtracting the blurred image from the original image.\\
 
 To compute the kernel reponsible for blurring the image, we can use the Gaussian filter. The gaussian filter computes a weighted average of the pixels in the neighborhood. The weights fall off as the distance increases from the center pixel, according to the gaussian distribution. We can control such gaussian distribution by changing the value of the standard deviation $\sigma$ (i.e control the amount of blur). The size for the kernel matters: to give a good approximated representation of the gaussian function we choose the kernel size to be $4\sigma +1$.\\
@@ -134,7 +134,7 @@ im_sharp = imfilter(im, unsharp_filter);
 \end{figure}
 \section{Morphological operations A [2 points]}
 Morphological operations are a set of operations that are applied to binary images, in order to alter the represented shapes.\\
-The exercise requires to choose one structuring element and perform multiple morphological operations on the binary in order to obtain the desired result.\\
+The exercise requires to choose one structuring element and perform multiple morphological operations on the binary image in order to obtain the desired result.\\
 By choosing structural element $c)$ we can obtain the desired result by performing erosion and dilation in succession. Results are shown in Figure \ref{fig:3}:
 \begin{figure}[h!]
     \begin{subfigure}[b]{0.33\linewidth}
@@ -157,28 +157,31 @@ By choosing structural element $c)$ we can obtain the desired result by performi
 \end{figure}
 \section{Morphological operations B [2 points]}
 Having just one foreground pixel in the structuring element and applying erosion on a binary image results in the removal of the edges in a particular direction.\\
-It can be easily visualized by thinking of shining a directed light on the shape, and by eroding the pixels that are in shadow.
-
-% \begin{figure}[h!]
-%     \begin{subfigure}[b]{0.24\linewidth}
-%         \centering
-%         \includegraphics[width=.5\linewidth]{fig/3.0.png}
-%     \end{subfigure}
-%     \begin{subfigure}[b]{0.24\linewidth}
-%         \centering
-%         \includegraphics[width=.5\linewidth]{fig/3.1.png}
-%     \end{subfigure}
-%     \begin{subfigure}[b]{0.24\linewidth}
-%         \centering
-%         \includegraphics[width=.5\linewidth]{fig/3.2.png}
-%     \end{subfigure}
-%     \begin{subfigure}[b]{0.24\linewidth}
-%         \centering
-%         \includegraphics[width=.5\linewidth]{fig/3.2.png}
-%     \end{subfigure}
-%     \caption{Morphological operations using structuring element c)}
-%     \label{fig:4}
-% \end{figure}
+It can be easily visualized by thinking of shining a directed light on the shape, and by eroding the pixels that are in shadow. The farther the white pixel in the structuring element is from the target pixel, the greater the "shadow" is. The demonstration is shown in Figure \ref{fig:4}:
+\begin{figure}[h!]
+    \begin{subfigure}[b]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/4.er1.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/4.er2.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/4.er3.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/4.er4.png}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.195\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/4.er5.png}
+    \end{subfigure}
+    \caption{Erosion comparison for arbitrary structuring elements}
+    \label{fig:4}
+\end{figure}
 \section{Linear Motion Blur Filter [4 points]}
 The gaussian function is the same on every axis i.e it falls off equally in every direction. However, in the case of motion blur, each axis can have a separate gaussian function. This allows us to mimic the effect of motion blur.\\
 Additionally, we want to provide the angle in degrees for which we rotate the kernel. Let us implement function \mintinline{matlab}{gaussianKernel(sigma,angle)} for computing the anisotropic gaussian kernel.
@@ -313,4 +316,25 @@ edges = imdilate(edges, strel('disk', 2));
 im_stylized = im_bilat.*~edges;
 \end{minted}
 Notice how the Canny\footnote{Canny edge detection: Uses linear filtering with a Gaussian kernel to smooth noise and then computes the edge strength and direction for each pixel in the smoothed image. [Sources \href{https://indiantechwarrior.com/canny-edge-detection-for-image-processing/}{indiantechwarrior.com}, \href{https://ch.mathworks.com/help/images/ref/edge.html}{mathworks.com}]} algorithm has been used for computing the edges of the image. In my experience using the Canny algorithm yields the best results, as it tends to group regions of similar color values together, resulting in the desired cartoonish effect.
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.325\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/6.1.im_bilat.jpg}
+        \caption{Bilateral blurred image}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.325\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/6.1.im_bilat_edges.jpg}
+        \caption{Edges}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.325\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/out/6.1.im_stylized.jpg}
+        \caption{Final sytlized image}
+    \end{subfigure}
+\end{figure}
+
+
 \end{document}
