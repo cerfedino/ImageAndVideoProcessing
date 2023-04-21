@@ -72,8 +72,23 @@ If we consider an image where every pixel has value $63$ as a result of the conv
 Knowing that each convoluted pixel ranges from $-315$ to $441$, we can apply a linear transformation to the pixel values. By mapping each pixel intensity by mapping it $x \mapsto (x+315)(\frac{63}{441-(-315)})$ we will map the pixel values to the range $[0,63]$.
 
 \textbf{Separability of filter $H$}\\
-
-
+For separating a filter we can use the SVD (Singular Value Decomposition) technique\footnote{Singular Value Decomposition (SVD): In linear algebra, the singular value decomposition (SVD) is a factorization of a real or complex matrix. It generalizes the eigendecomposition of a square normal matrix with an orthonormal eigenbasis to any $m\times n$ matrix.[Source \href{https://en.wikipedia.org/wiki/Singular_value_decomposition}{wikipedia.org}]}. The SVD factorizes a matrix $H\in\mathds{R}^{n\times m}$ into:
+$$H = U * S * V'$$
+where $A$ is an $m \times n$ matrix, $U$ is an $m \times m $orthogonal matrix, $S$ is an $m \times n$ diagonal matrix, and $V$ is an $n \times n$ orthogonal matrix. The diagonal elements of $S$ are the singular values of $A$, which are always non-negative and sorted in decreasing order. The columns of $U$ and $V$ are the left and right singular vectors of $A$, respectively.\\
+Let us define $k_1$ and $k_2$ as the row and column vectors into which we will separate filter $H$ into. We can find $k_1$ and $k_2$ by taking the square root of the singular values of $H$ and multiplying them by the corresponding singular vectors.
+\vspace{-0.5cm}
+\begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab}
+H = [-1 -2 0; -2 0 3; 0 3 1]
+[U, S, V] = svd(H)
+k1 = sqrt(S(1,1)) * U(:,1)
+k2 = sqrt(S(1,1)) * V(:,1)'
+\end{minted}
+$$
+H=\bmat{\input{fig/out/1.3.H.tex}}, U=\bmat{\input{fig/out/1.3.U.tex}}, S=\bmat{\input{fig/out/1.3.S.tex}}, V=\bmat{\input{fig/out/1.3.V.tex}}
+$$
+$$
+k_1=\bmat{\input{fig/out/1.3.k1.tex}}, k_2=\bmat{\input{fig/out/1.3.k2.tex}}
+$$
 \section{Combining linear operations [2 points]}
 We know that the unsharp masking operation can be represented with the following formula:
 \begin{figure}[h!]
