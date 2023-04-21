@@ -119,7 +119,7 @@ Parameter $\gamma$ serves as a control parameter for determining the amount of s
 % ...
 % Create gaussian blur filter with a gamma parameter of 1
 sigma = 1;
-gamma = 5;
+gamma = 8;
 size = 4*sigma + 1;
 blur_f = fspecial('gaussian', size, sigma);
 % Identity kernel - leaves the pixel untouched
@@ -216,7 +216,7 @@ function res = gaussianKernel(sigma, angle)
     Xg = X * cos(angle) - Y * sin(angle);
     Yg = X * sin(angle) + Y * cos(angle);
 
-    res = exp(-(Xg.^2/(2*sigma(2)^2) + Yg.^2/(2*sigma(1)^2))) ;
+    res = exp(-(Xg.^2/(2*sigma(2)^2) + Yg.^2/(2*sigma(1)^2)));
     res = res / sum(res(:));
 end
 \end{minted}

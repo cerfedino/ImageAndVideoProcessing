@@ -1,12 +1,11 @@
 im = im2double(imread("./media/graz.png"));
 
-sigma = 10;
 % Motion blur filter
-motionblur_filter = gaussianKernel([sigma, 1], -45);
+motionblur_filter = gaussianKernel([10, 1], -45);
 im_motionblur = imfilter(im, motionblur_filter, 'symmetric');
 
 
-blur_filter = gaussianKernel(sigma, 0);
+blur_filter = gaussianKernel(10, 0);
 im_blur = imfilter(im, blur_filter, 'symmetric');
 figure(); imshow([im, im_motionblur], []); title("Anisotropic blur");
 imwrite(im2uint8(im), "./out/5.im.jpg");
