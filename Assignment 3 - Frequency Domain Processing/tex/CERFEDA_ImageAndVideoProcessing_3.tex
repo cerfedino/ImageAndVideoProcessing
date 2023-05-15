@@ -134,6 +134,203 @@
    \end{center}
 \end{titlepage}
 
+\section{Theoretical exercise [2 points]}
+In this section, we will show that if $f(x,y) = g(x)\cdot g(y)$, then the Fourier transform of $F(u,v) = G(u)\cdot G(v)$, where $G(u)$ is the Fourier transform of $g(x)$.\\
+We know that a 2D Fourier transform is defined as:
+$$F(u,v) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f(x,y) \cdot e^{-j2\pi(ux+vy)} dx dy$$
+
+We can substitute $f(x,y)$ with $g(x)\cdot g(y)$:
+$$F(u,v) = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x)\cdot g(y) \cdot e^{-j2\pi(ux+vy)} dx dy$$
+
+We can split the integral in two parts:
+$$F(u,v) = \int_{-\infty}^{\infty} g(x) \cdot e^{-j2\pi ux} dx \cdot \int_{-\infty}^{\infty} g(y) \cdot e^{-j2\pi vy} dy$$
+
+We can recognize the Fourier transform of $g(x)$ and $g(y)$:
+$$F(u,v) = G(u) \cdot G(v)$$
+Therefore we have shown that if $f(x,y) = g(x)\cdot g(y)$, then the Fourier transform of $F(u,v) = G(u)\cdot G(v)$.
+
+
+\section{Theoretical exercise [2 points]}
+Compute Fourier transform $G(\mu)$ of function $g(x) = f(x)+f(-x)$, where $f(x)$ is the function plotted in \autoref{fig:1a}.
+The function $g(x)$ is plotted in \autoref{fig:1b}.
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tikzstyle{every node}=[font=\scriptsize]
+            \begin{axis}[
+                axis lines=middle,
+                % same axes scale
+                grid=both,
+                width=\textwidth,
+                % height=0.5\textwidth, 
+                % label style={font=\scriptsize},
+                % tick label style={font=\tiny},
+                xlabel={$x$},
+                ylabel={$f(x)$},
+                axis equal,
+                ymin=-0.5,
+                ymax=2.5,
+                xmin=-3,
+                xmax=3,
+                % xticks={-2,-1,0,1,2},
+                xticklabels={,,-2W,-W,,W,},
+                yticklabels={,,,A,2A},
+                ]
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(-3,0)(-2,0)};
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(-2,0)(-2,1)};
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(-2,1)(-1,1)};
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(-1,1)(-1,2)};
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(-1,2)(1,0)};
+                \addplot[thick, samples=100, color=red, line width=1pt] coordinates {(1,0)(3,0)};                
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Spatial domain function $f(x)$.}  
+        \label{fig:1a}      
+    \end{subfigure}    
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tikzstyle{every node}=[font=\scriptsize]
+            \begin{axis}[
+                axis lines=middle,
+                % same axes scale
+                grid=both,
+                width=\textwidth, 
+                % height=0.5\textwidth, 
+                % label style={font=\scriptsize},
+                % tick label style={font=\tiny},
+                xlabel={$x$},
+                ylabel={$f(x)$},
+                axis equal,
+                ymin=-0.5,
+                ymax=2.5,
+                xmin=-3,
+                xmax=3,
+                % xticks={-2,-1,0,1,2},
+                xticklabels={,,-2W,-W,,W,2W},
+                yticklabels={,,,A,2A},
+                ]
+                % g(x) = f(x) + f(-x)
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-3,0)(-2,0)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-2,0)(-2,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-2,1)(-1,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-1,1)(-1,2)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-1,2)(1,2)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(1,2)(1,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(1,1)(2,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(2,1)(2,0)};
+                \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(2,0)(3,0)};
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Spatial domain function $g(x) = f(x) + f(-x)$.}
+        \label{fig:1b}
+    \end{subfigure}
+
+    
+    \caption{Spatial domain function $f(x)$ [red] and $g(x) = f(x) + f(-x)$ [blue].}
+    \label{fig:1}
+\end{figure}
+
+
+By looking at \autoref{fig:1b}, it can be seen that the function $g(x)$ can be represented as the sum of two box functions.
+\autoref{fig:2} shows the two box functions $h_1(x)$ and $h_2(x)$ that sum up to $g(x)$.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tikzstyle{every node}=[font=\scriptsize]
+            \begin{axis}[
+                axis lines=middle,
+                % same axes scale
+                grid=both,
+                width=\textwidth,
+                % height=0.5\textwidth, 
+                % label style={font=\scriptsize},
+                % tick label style={font=\tiny},
+                xlabel={$x$},
+                ylabel={$f(x)$},
+                axis equal,
+                ymin=-0.5,
+                ymax=2.5,
+                xmin=-3,
+                xmax=3,
+                % xticks={-2,-1,0,1,2},
+                xticklabels={,,-2W,-W,,W,2W},
+                yticklabels={,,,A,2A},
+                ]
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-3,0)(-2,0)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-2,0)(-2,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-2,1)(2,1)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-1,1)(-1,2)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-1,2)(1,2)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(1,2)(1,1)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(1,1)(2,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(2,1)(2,0)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(2,0)(3,0)};
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Box function $h_1(x)$.}  
+        \label{fig:2a}      
+    \end{subfigure}    
+    \begin{subfigure}{0.48\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tikzstyle{every node}=[font=\scriptsize]
+            \begin{axis}[
+                axis lines=middle,
+                % same axes scale
+                grid=both,
+                width=\textwidth, 
+                % height=0.5\textwidth, 
+                % label style={font=\scriptsize},
+                % tick label style={font=\tiny},
+                xlabel={$x$},
+                ylabel={$f(x)$},
+                axis equal,
+                ymin=-0.5,
+                ymax=2.5,
+                xmin=-3,
+                xmax=3,
+                % xticks={-2,-1,0,1,2},
+                xticklabels={,,-2W,-W,,W,2W},
+                yticklabels={,,,A,2A},
+                ]
+                % g(x) = f(x) + f(-x)
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-3,0)(-1,0)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-2,0)(-2,1)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(-2,1)(-1,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-1,0)(-1,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(-1,1)(1,1)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(1,1)(1,0)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(1,1)(2,1)};
+                % \addplot[thick, samples=100, color=blue, line width=1pt] coordinates {(2,1)(2,0)};
+                \addplot[thick, samples=100, color=blue, line width=1pt, dashed] coordinates {(1,0)(3,0)};
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Box function $h_2(x)$.}
+        \label{fig:2b}
+    \end{subfigure}
+
+    
+    \caption{The two box functions that sum up to $g(x)$.}
+    \label{fig:2}
+\end{figure}
+
+The Fourier transform of a box function $h(x)$ is known: $H(\mu) = AW\text{sinc}(\mu W)$, where $A$ is the amplitude of the box function
+and $W$ is the width of the box.
+
+We can thus express the Fourier transform of $g(x)$ as the sum of the Fourier transform of $h_1(x)$ and $h_2(x)$:
+\begin{align*}
+    G(\mu) &= H_1(\mu) + H_2(\mu) \\
+    &= A4W\text{sinc}(\mu 4W) + A2W\text{sinc}(\mu 2W) \\
+    &= A2W\left(2\text{sinc}(\mu 4W) + \text{sinc}(\mu 2W)\right)
+\end{align*}
+ 
+
 
 
 
@@ -274,120 +471,10 @@ Looking at the windowed filter in \autoref{fig:ex5}, we can express $g(x)$ as th
 In \autoref{fig:ex5-Hw-Gw} we can see the Fourier transform of the original Gaussian filter $H(\omega)$ and its windowed version $G(\omega)$. It can be seen that in $G(\omega)$ the convolution with the sinc function has the effect of amplifying some frequencies at the sides which were almost zero in the Gaussian version $H(\omega)$.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \section{Gaussian Filtering [4 points]}
+
+
+
 \begin{figure}[h!]
     \centering
 \begin{tikzpicture}
