@@ -394,6 +394,22 @@ The standard deviation $\sigma$ found above is in the Fourier domain. To find th
 
 
 
+\subsection{Bonus}
+The Fourier transform of a Gaussian function $g(x) = e^{-x^2}$ is another Gaussian function.
+\begin{align*}
+    \mathscr{F}_x[g(x)](k) &= \int_{-\infty}^{+\infty}{g(x)e^{-2\pi kix}dx}\\
+    &= \int_{-\infty}^{+\infty}{e^{-x^2}e^{-2\pi kix}dx}\\
+    &= \int_{-\infty}^{+\infty}{e^{-x^2}[\cos(2\pi kx) - i\sin(2\pi kx)]dx}\\
+    &= \int_{-\infty}^{+\infty}{e^{-x^2}\cos(2\pi kx)dx} - i\int_{-\infty}^{+\infty}{e^{-x^2}\sin(2\pi kx)dx}
+\end{align*}
+The integral of the imaginary part is zero since the integrand is an odd function and the integration interval is symmetric. We are left with the integral of the real part:
+\begin{align*}
+    \mathscr{F}_x[g(x)](k) &= \int_{-\infty}^{+\infty}{e^{-x^2}\cos(2\pi kx)dx} \\
+    &= \sqrt{\pi}e^{-\pi^2k^2}
+\end{align*}
+which is still a Gaussian function. So the Fourier transform of a Gaussian function is another Gaussian function.
+
+
 
 
 \section{Theoretical exercise}
