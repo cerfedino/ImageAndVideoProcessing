@@ -333,8 +333,6 @@ We can thus express the Fourier transform of $g(x)$ as the sum of the Fourier tr
 
 
 
-
-
 \section{Theoretical exercise} \label{sec:3}
 
 Reducing the size of an image can lead to aliasing unless a low-pass filter is applied before.
@@ -470,11 +468,97 @@ Looking at the windowed filter in \autoref{fig:ex5}, we can express $g(x)$ as th
 
 In \autoref{fig:ex5-Hw-Gw} we can see the Fourier transform of the original Gaussian filter $H(\omega)$ and its windowed version $G(\omega)$. It can be seen that in $G(\omega)$ the convolution with the sinc function has the effect of amplifying some frequencies at the sides which were almost zero in the Gaussian version $H(\omega)$.
 
-
+\clearpage
 \section{Gaussian Filtering [4 points]}
+\subsection{Equivalence of spatial and frequency domain filtering}
+In this exercise we have to implement Gaussian filtering both in the spatial and frequency domain. Namely, we want to show that convoluting a gaussian filter with $\sigma_s$ in the spatial domain is equivalent to performing point-wise multiplication in the fourier domain between the image spectrum and another gaussian filter with $\sigma_f = \frac{1}{2\sigma_s \pi}$.
+\begin{itemize}
+    \item \textbf{Spatial domain}
+\begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
+function [img_filtered] = spatialGaussianFiltering(img, sigma_s)
+        kernel_size_s = 4*sigma_s+1;
+        gaussian_filter_spatial = fspecial('gaussian', kernel_size_s, sigma_s);
+        img_filtered = conv2(img,gaussian_filter_spatial,'same');
+end
+\end{minted}
+Results are shown in \autoref{fig:ex6-spatial}.
+    \item \textbf{Frequency domain}
+\begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
+function img2_filtered = frequencyGaussianFiltering(img, sigma_s)
+    % Convert image to frequency domain
+    %%% Pad image to solve periodicity problem
+    img2_pad = padarray(img,size(img),'post');
+    %%% Shift image
+    img2_pad = img2_pad .* (-1) .^((meshgrid(1:size(img2_pad,2), 1:size(img2_pad,1))) 
+        + meshgrid(1:size(img2_pad,1), 1:size(img2_pad,2)).');
+    %%% Convert to frequency domain
+    img2_fft = fft2(img2_pad);
+    % Compute gaussian kernel for frequency domain
+    sigma_f = (1/(2*pi*sigma_s))*10000;
+    kernel_size_f = size(img2_pad);
+    gaussian_filter_frequency = fspecial('gaussian', kernel_size_f, sigma_f);
+    % Perform gaussian filtering in frequency domain
+    img2_filtered_fft = img2_fft .* gaussian_filter_frequency;
+    %%% Bring image back to spatial domain
+    img2_filtered = ifft2(img2_filtered_fft);
+    %%% Shift image back
+    img2_filtered = img2_filtered .* (-1) .^((meshgrid(1:size(img2_filtered,2), 
+        1:size(img2_filtered,1))) + meshgrid(1:size(img2_filtered,1), 
+        1:size(img2_filtered,2)).');
+    %%% Crop image
+    img2_filtered = img2_filtered(1:size(img,1),1:size(img,2));
+end
+\end{minted}
+Results are shown in \autoref{fig:ex6-frequency}.
+\end{itemize}
 
 
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/out/6.img.png}
+        \caption{Original image}
+    \end{subfigure}
+    \begin{subfigure}{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/out/6.gaussian_filter_spatial.png}
+        \caption{Spatial gaussian filter}
+    \end{subfigure}
+    \begin{subfigure}{0.23\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/out/6.img_filtered.png}
+        \caption{Filtered image}
+    \end{subfigure}
+    \caption{Gaussian filtering pipeline in the spatial domain}
+    \label{fig:ex6-spatial}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=.5\textwidth]{fig/out/6.img2.png}
+        \includegraphics[width=.5\textwidth]{fig/out/6.img2_fft.png}
+        \caption{Original padded and shifted image}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=.5\textwidth]{fig/out/6.gaussian_filter_frequency.png}
+        \caption{Gaussian filter for frequency domain}
+    \end{subfigure}
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=.5\textwidth]{fig/out/6.img2_filtered.png}
+        \includegraphics[width=.5\textwidth]{fig/out/6.img2_filtered_fft.png}
+        \caption{Filtered image}
+    \end{subfigure}
+    \caption{Gaussian filtering pipeline in the frequency domain}
+    \label{fig:ex6-frequency}
+\end{figure}
 
+\subsection{[BONUS] Benchmarking filtering pipelines in the spatial and frequency domain}
+Let us now compare the two filtering pipelines in terms of execution time. We will vary the spatial sigma $\sigma_s$ and measure the execution time of both pipelines. Results are shown in \autoref{fig:ex6-benchmark}. We can see that the frequency domain filtering pipeline is faster than the spatial domain one for the majority of values of $\sigma_s$.\\\\
+There are a couple of important remarks to make. We notice how the computational complexity of filtering in the frequency domain comes from computing the fourier spectrum of the image, and therefore depends on the size of the image, while the computational complexity of filtering in the spatial domain depends on the size of the kernel (and therefore on $\sigma$ in the case of gaussian filtering).\\Does this mean that for larger images spatial filtering is to be preferred ? Not necessarily. If an image has to be filtered multiple times (e.g in a image editing software), frequency filtering would require to compute the fourier spectrum only once, amortizing the computational cost over multiple filtering operations. Otherwise, when performing a single filtering operation on a very large image, spatial filtering would be preferred.
 \begin{figure}[h!]
     \centering
 \begin{tikzpicture}
@@ -492,27 +576,54 @@ In \autoref{fig:ex5-Hw-Gw} we can see the Fourier transform of the original Gaus
     \end{axis}
 \end{tikzpicture}
 \caption{Benchmark comparing Gaussian filtering in the spatial domain vs in the frequency domain}
+\label{fig:ex6-benchmark}
 \end{figure}
 
 
 
+\clearpage
 \section{Image Restoration [4 points]}
+We are tasked in removing the checkerboard pattern from the provided image by cancelling out some frequencies in the fourier domain.
+\begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
+% ...
+% Bring the image in the frequency domain
+fft_img = fftshift(fft2(img));
 
+% Compute the mask
+mask = circleMask(size(img), 14, [210, 280]);
+mask = mask + circleMask(size(img), 14, [265, 285]);
+mask = mask + circleMask(size(img), 14, [215, 355]);
+mask = mask + circleMask(size(img), 14, [270, 360]);
+mask = ~mask;
+
+% Apply the mask
+fft_masked = fft_img .* mask;
+
+% Unshift and bring in the spatial domain
+fft_res = ifftshift(fft_masked);
+img_res = ifft2(fft_res);
+function mask = circleMask(imgsize, radius, position)
+    [W,H] = meshgrid(1:imgsize(2),1:imgsize(1));
+    mask = (((W-position(1)).^2 + (H-position(2)).^2) < radius^2);
+end
+\end{minted}
+We notice how the checkerboard pattern is oriented diagonally. That is the clear indicator of a sum of equal sinusoids in both vertical and horizontal direction. In fact, the fourier spectrum of the image shows two peaks in both the horizontal and vertical direction. We can therefore cancel the pattern by masking the fourier spectrum in the corresponding frequencies. Results are shown in \autoref{fig:ex7}.
 \begin{figure}[h!]
     \centering
     \begin{subfigure}{0.27\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig/out/7.img.png}
-        \includegraphics[width=\textwidth]{fig/out/7.img_fft.png}
+        \includegraphics[width=.5\textwidth]{fig/out/7.img.png}
+        \includegraphics[width=.5\textwidth]{fig/out/7.img_fft.png}
         \caption{Original image}
     \end{subfigure}
     \begin{subfigure}{0.27\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig/out/7.res.png}
-        \includegraphics[width=\textwidth]{fig/out/7.res_fft.png}
+        \includegraphics[width=.5\textwidth]{fig/out/7.res.png}
+        \includegraphics[width=.5\textwidth]{fig/out/7.res_fft.png}
         \caption{Image with masked pattern}
     \end{subfigure}
     \caption{Comparison of different histogram equalization techniques.}
+    \label{fig:ex7}
 \end{figure}
 
 

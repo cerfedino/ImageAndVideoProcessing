@@ -5,29 +5,29 @@ img(imsize/4:imsize/4*3, imsize/4:imsize/4*3)=0;
 
 %% Gaussian filtering in spatial domain
 sigma_s = 5;
-[img_gaussian_spatial, kernel_size_s, gaussian_filter_spatial ] = spatialGaussianFiltering(img, sigma_s);
+[img_filtered, kernel_size_s, gaussian_filter_spatial ] = spatialGaussianFiltering(img, sigma_s);
 
 
 %% Gaussian filtering in frequency domain
-[ img2_filtered, img2_pad, img2_fft, gaussian_filter_frequency ] = frequencyGaussianFiltering(img, sigma_s);
+[ img2_filtered, img2_pad, img2_fft, gaussian_filter_frequency, img2_filtered_fft ] = frequencyGaussianFiltering(img, sigma_s);
 
 
 %% BONUS: Benchmark
 benchmark_sigmas = 1:60;
 results = zeros(size(benchmark_sigmas,2),3);
-for i = benchmark_sigmas
-    fprintf("\rBenchmarking spatial sigma %i/%i:\t1. SPATIAL   domain",i,size(benchmark_sigmas,2));
-    tic();
-    spatialGaussianFiltering(img, i);
-    time1 = toc();
-    fprintf("\rBenchmarking spatial sigma %i/%i:\t1. FREQUENCY domain",i,size(benchmark_sigmas,2));
-    tic();
-    frequencyGaussianFiltering(img, i);
-    time2 = toc();
-    results(i,:) = [i time1 time2];
-end
+% for i = benchmark_sigmas
+%     fprintf("\rBenchmarking spatial sigma %i/%i:\t1. SPATIAL   domain",i,size(benchmark_sigmas,2));
+%     tic();
+%     spatialGaussianFiltering(img, i);
+%     time1 = toc();
+%     fprintf("\rBenchmarking spatial sigma %i/%i:\t1. FREQUENCY domain",i,size(benchmark_sigmas,2));
+%     tic();
+%     frequencyGaussianFiltering(img, i);
+%     time2 = toc();
+%     results(i,:) = [i time1 time2];
+% end
 
-matrix2tablebody(results, "./out/benchmark.dat", '%.5f', ["x", "y", "z"], ' ',sprintf('\n'))
+% matrix2tablebody(results, "./out/benchmark.dat", '%.5f', ["x", "y", "z"], ' ',sprintf('\n'))
 
 subplot(1,3,1);
 imshow(img);
@@ -36,7 +36,7 @@ subplot(1,3,2);
 imshow(gaussian_filter_spatial, []);
 title('Gaussian kernel in spatial domain');
 subplot(1,3,3);
-imshow(img_gaussian_spatial);
+imshow(img_filtered);
 title('Filtered image in spatial domain');
 
 figure;
@@ -53,16 +53,24 @@ subplot(1,4,4);
 imshow(img2_filtered);
 title('Filtered image in frequency domain');
 
+imwrite(im2uint8(img), './out/6.img.png');
+imwrite(mat2gray(gaussian_filter_spatial, [min(gaussian_filter_spatial(:)) max(gaussian_filter_spatial(:))]), './out/6.gaussian_filter_spatial.png');
+imwrite(im2uint8(img_filtered), './out/6.img_filtered.png');
+imwrite(im2uint8(img2_pad), './out/6.img2.png');
+imwrite(im2uint8(img2_fft), './out/6.img2_fft.png');
+imwrite(mat2gray(gaussian_filter_frequency, [min(gaussian_filter_frequency(:)) max(gaussian_filter_frequency(:))]), './out/6.gaussian_filter_frequency.png');
+imwrite(im2uint8(img2_filtered), './out/6.img2_filtered.png');
+imwrite(mat2gray(img2_filtered_fft, [min(img2_filtered_fft(:)) max(img2_filtered_fft(:))]), './out/6.img2_filtered_fft.png');
 
 
-function [img_gaussian_spatial, kernel_size_s, gaussian_filter_spatial] = spatialGaussianFiltering(img, sigma_s)
+function [img_filtered, kernel_size_s, gaussian_filter_spatial] = spatialGaussianFiltering(img, sigma_s)
     kernel_size_s = 4*sigma_s+1;
     gaussian_filter_spatial = fspecial('gaussian', kernel_size_s, sigma_s);
-    img_gaussian_spatial = conv2(img,gaussian_filter_spatial,'same');
+    img_filtered = conv2(img,gaussian_filter_spatial,'same');
 end
 
 
-function [ img2_filtered, img2_pad, img2_fft, gaussian_filter_frequency ] = frequencyGaussianFiltering(img, sigma_s)
+function [ img2_filtered, img2_pad, img2_fft, gaussian_filter_frequency, img2_filtered_fft ] = frequencyGaussianFiltering(img, sigma_s)
     % Convert image to frequency domain
     %%% Pad image to solve periodicity problem
     img2_pad = padarray(img,size(img),'post');
@@ -72,16 +80,16 @@ function [ img2_filtered, img2_pad, img2_fft, gaussian_filter_frequency ] = freq
     img2_fft = fft2(img2_pad);
 
     % Compute gaussian kernel for frequency domain
-    sigma_f = (1/(2*pi*sigma_s));
+    sigma_f = (1/(2*pi*sigma_s))*10000;
     kernel_size_f = size(img2_pad);
     gaussian_filter_frequency = fspecial('gaussian', kernel_size_f, sigma_f);
     % gaussian_filter_frequency = fftshift(gaussian_filter_frequency);
     % gaussian_filter_frequency = gaussian_filter_frequency / sum(gaussian_filter_frequency(:));
 
     % Perform gaussian filtering in frequency domain
-    img2_fft_filtered = img2_fft .* gaussian_filter_frequency;
+    img2_filtered_fft = img2_fft .* gaussian_filter_frequency;
     %%% Bring image back to spatial domain
-    img2_filtered = ifft2(img2_fft_filtered);
+    img2_filtered = ifft2(img2_filtered_fft);
     %%% Shift image back
     img2_filtered = img2_filtered .* (-1).^((meshgrid(1:size(img2_filtered,2), 1:size(img2_filtered,1))) + meshgrid(1:size(img2_filtered,1), 1:size(img2_filtered,2)).');
     %%% Crop image
