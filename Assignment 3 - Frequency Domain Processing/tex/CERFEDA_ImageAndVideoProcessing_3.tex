@@ -1,14 +1,93 @@
 \documentclass[tikz,14pt,fleqn]{article}
 
-\input{headers.sty}
-
-
+\setlength{\parskip}{0.5\baselineskip}%
 \usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{amsmath}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{animate}
+\usepackage{fancyhdr}
+\usepackage[linguistics]{forest}
+\usepackage{colortbl}
+\usepackage{pdfpages}
+\usepackage{wrapfig}
+\usepackage{cancel}
+\usepackage{multirow}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
 
+\usepackage{minted}
+\definecolor{LightGray}{gray}{0.95}
+\setminted{
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    bgcolor=LightGray,
+    fontsize=\small,
+    linenos,
+    mathescape=true,
+    escapeinside=||,
+    fontsize=\footnotesize,
+}
 
+\definecolor{darkblue}{rgb}{0.0, 0.0, 1}
+\usepackage[pdftex,hyperfigures,hyperindex,bookmarksnumbered,colorlinks, bookmarks, breaklinks, linktocpage,citecolor=darkblue,urlcolor=darkblue,linkcolor=darkblue,pagebackref=true,linktoc=all]{hyperref}
+\usepackage{cleveref}
+
+% to fixme
+\usepackage{xcolor} 
+\definecolor{FIXMECOLOR}{rgb}{1,0,0}
+\newcommand{\FIXME}[1]{{\color{FIXMECOLOR}{\textbf{FIXME: #1}}}} 
+
+% to simplify math 
+
+\newcommand{\bvec}[1]{
+   \ensuremath{
+   \begin{bmatrix}
+       #1 \\
+   \end{bmatrix}
+}}
+
+\newcommand{\bmat}[1]{
+   \ensuremath{
+   \begin{bmatrix}
+       #1
+   \end{bmatrix}
+}}
+
+\newcommand{\dotprod}[2]{\ensuremath{\left< #1, #2 \right>}}
+
+%% For plotting
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.9}
+\usepgfplotslibrary{external}
+\tikzexternalize
+%%
+\usepackage{dirtree}
+\usepackage{subcaption}
+\usepackage{xifthen}% provides \isempty test
+\usepackage{glossaries}
+
+\captionsetup[subfigure]{labelformat=empty}
+\definecolor{color1}{HTML}{0B0C10}
+\definecolor{color2}{HTML}{1F2833}
+\definecolor{color3}{HTML}{C5C6C7}
+\definecolor{color4}{HTML}{66FCF1}
+\definecolor{color5}{HTML}{45A29E}
+
+\pagestyle{fancy}
+\fancyhf{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% VARIABLES
-\newcommand\namesurname{Albert Cerfeda}
+\newcommand\namesurname{Albert Cerfeda, Alessandro Gobbetti}
 \newcommand\assignment{Assignment 3 - Frequency Domain Processing}
 
 \newcommand\subject{Image \& Video Processing}
@@ -54,6 +133,301 @@
 
    \end{center}
 \end{titlepage}
+
+
+
+
+
+\section{Theoretical exercise} \label{sec:3}
+
+Reducing the size of an image can lead to aliasing unless a low-pass filter is applied before.
+The goal of this exercise is to find the smallest standard deviation of a Gaussian filter that can be applied in the spatial domain to avoid aliasing when reducing the size of an image by a factor of $c$.\\
+
+When sampling, we make use of the \textit{Impulse signal} to take equally-spaced samples. The sample density is defined through the constant $\Delta T$. Reducing the size of an image by a factor of $c$ means that when performing downsampling we sample one pixel every $c$ pixels, i.e. $\Delta T = c$. It is important to note that the Fourier transform of an Impulse signal $s_{\Delta T}(t)$ with $\Delta T = c$  in the spatial domain results in another Impulse signal defined in the frequency domain $\mathscr{F}\{s_{\Delta T}(t)\}$with $\Delta T = \frac{1}{c}$. The translation from the spatial domain to the frequency (Fourier) domain can be visualized in \autoref{fig:4.impulse}:
+% TODO: insert animated gif
+\begin{figure}[H]
+    \centering
+    % \animategraphics[width=0.4\linewidth]{12}{./fig/gif/frame_}{0}{134}
+    \includegraphics[width=0.4\linewidth]{./fig/3.spatialfourier.png}
+    \caption{Equivalent Impulse signals in spatial and frequency domain}
+    \label{fig:4.impulse}
+\end{figure}
+
+Convoluting the Fourier transformations of the image with an Impulse signal results in the image spectrum being repeated for every Impulse point in the Impulse train. If the Impulse train is too dense (i.e. $\Delta T$ is relatively small) the repeated image spectrums may overlap in certain positions. This leads to aliasing artifacts. This phenomenon is visualized in \autoref{fig:4.aliasing}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/3.aliasing.png}
+    \caption{$\mathscr{F}\left\{s_{\Delta T}(t)\right\} \star \mathscr{F}\{f(t)\}$}
+    \label{fig:4.aliasing}
+\end{figure}
+As a countermeasure we apply Gaussian filtering on the image to get rid of high frequencies, resulting in the image spectrum being "narrower" and able to fit in the resulting spectrum without incurring overlaps.
+We should thus find a Gaussian kernel that does not overlap in the frequency domain as shown in \autoref{fig:4.gaussian}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/3.aliasing_gaussians.png}
+    \caption{$\mathscr{F}\left\{s_{\Delta T}(t)\right\} \star \mathscr{F}\{f(t)\star g(t)\}$}
+    \label{fig:4.gaussian}
+\end{figure}
+
+
+Given that $\Delta T = c$ is in the spatial domain, it is $\Delta T = \frac{1}{c}$ in the Fourier domain. We can use the size of the Gaussian kernel when performing prefiltering on the image to impose a bound on the width of the image spectrum in order not to incur overlaps. 
+
+However, a little bit of overlap is not a problem, for this exercise, we can assume that the spatial frequencies which are attenuated by a filter with a factor smaller than 0.75 do not cause aliasing.
+We thus need to find the standard deviation $\sigma$ of the Gaussian kernel in the Fourier domain such that all the values are attenuated by a factor of at least 0.75.
+
+From the Gaussian function:
+\begin{equation*}
+    G(x) = e^{-\frac12(\frac{x-\mu}{\sigma})^2},
+\end{equation*}where $\mu$ is the mean and $\sigma$ is the standard deviation. 
+We want then to find that $\sigma$ such that a Gaussian function with mean 0 and standard deviation $\sigma$ is attenuated by a factor of 0.75 at $x = \frac{1}{2c}$:
+\begin{align*}
+    0.75 = G(x) &= e^{-\frac12(\frac{x-0}{\sigma})^2} \\
+    0.75 &= e^{-\frac12(\frac{x}{\sigma})^2} \\
+    \ln(0.75) &= -\frac12(\frac{x}{\sigma})^2 \\
+    \sigma^2 &= -\frac{x^2}{2\ln(0.75)} \\
+    \sigma^2 &= -\frac{(\frac{1}{2c})^2}{2\ln(0.75)} \\
+    \sigma &= \sqrt{-\frac{1}{8\ln(0.75)c^2}} \\
+    \sigma &= \frac{1}{c}\sqrt{-\frac{1}{8\ln(0.75)}}\\
+    \sigma &\approx \frac{0.66}{c}
+\end{align*}
+
+The standard deviation $\sigma$ found above is in the Fourier domain. To find the standard deviation $\sigma_s$ of the corresponding Gaussian kernel in the spatial domain (since the Fourier transform of a Gaussian function is another Gaussian function):
+\begin{align*}
+    \sigma_s&=\frac{1}{2\sigma \pi} \\
+    \sigma_s&\approx\frac{1}{2\frac{0.66}{c} \pi} = \frac{c}{1.32\pi} \\
+\end{align*}
+
+
+
+
+
+\section{Theoretical exercise}
+\autoref{fig:ex4} shows the magnitude of the Fourier spectrum of a spatial signal $f(x)$, which is two boxes centered around the frequency $±\omega_0$. We want to find the spatial signal $f(x)$ assuming arbitrary boxes' width $W$ and height $A$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{fig/4.plot.png}
+    \caption{Magnitude of the Fourier spectrum of a spatial signal $f(x)$.}
+    \label{fig:ex4}
+\end{figure}
+
+% Looking at \autoref{fig:4}, we can notice two boxes centered around the frequency $±\omega_0$. Since the box function is the Fourier transform of a sinc function, we can state that the sinc function is part of $f(x)$. We also notice that the boxes are repeated at every multiple of $\omega_0$ in the frequency domain, therefore a sampling function seems to be part of $f(x)$ as well. 
+% We also know from the convolution theorem that the Fourier transform of a convolution of two signals is a product of their Fourier transforms and vice versa.
+
+Looking at \autoref{fig:ex4} we can identify multiple rect functions centered around the frequencies $±k\omega_0$. We can thus express the Fourier transform $F(x)$ as the convolution of a rect function $rect(x)$ and a sampling function $s_{\Delta T}(x)$:
+\begin{equation*}
+    F(x) = AW\texttt{rect}(Wx) \star s_{\omega_0}(x)
+\end{equation*}
+From the convolution theorem, we know that the Fourier transform of a convolution of two signals is a product of their Fourier transforms and vice versa.
+We also know that the Fourier transform of a sinc function is a box function and that the Fourier transform of a sampling function is still a sampling function with a sampling period $\Delta T_f = \frac{1}{\Delta T_s}$.
+
+The original signal $f(x)$ is then:
+\begin{equation*}
+    f(x) = AW\texttt{sinc}(WX) \cdot s_{\frac1{\omega_0}}(x)
+\end{equation*}
+
+
+
+
+\section{Theoretical exercise}
+Consider a task of filtering a signal with a spatial domain Gaussian filter $h(x)$. 
+The filter has been approximated with a kernel of inappropriate size ($s$), effectively windowing the original filter to $g(x)$.
+
+The new filter has now a different Fourier transform than the original one ($G(\omega) \neq H(\omega)$), but it can be expressed as:
+\begin{equation*}
+    G(\omega) = H(\omega) \star X(\omega)
+\end{equation*}
+Our goal is to derive an expression for $X(\omega)$, where $s$ is an additional parameter.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/5.hx-gx.png}
+    \caption{Visualization of the Gaussian filter $h(x)$ and its windowed version $g(x)$.}
+    \label{fig:ex5}
+\end{figure}
+
+Looking at the windowed filter in \autoref{fig:ex5}, we can express $g(x)$ as the multiplication of the original filter and a box function of width $s$. The Fourier transform of a box function is a sinc function, therefore, recalling the fact that the product of two signals in the spatial domain is a convolution in the frequency domain, we can express $G(\omega)$ as:
+\begin{equation*}
+    G(\omega) = H(\omega) \star (s\cdot\texttt{sinc}(\omega s))
+\end{equation*}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/5.hw.pdf}
+        \caption{$H(\omega)$}
+        \label{fig:ex5-Hw}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/5.gw.pdf}
+        \caption{$G(\omega)$}
+        \label{fig:ex5-Gw}
+    \end{subfigure}
+    \caption{Visualization of the Fourier transform of the Gaussian filter $H(\omega)$ and its windowed version $G(\omega)$.}
+    \label{fig:ex5-Hw-Gw}
+\end{figure}
+
+\FIXME{plots}
+
+In \autoref{fig:ex5-Hw-Gw} we can see the Fourier transform of the original Gaussian filter $H(\omega)$ and its windowed version $G(\omega)$. It can be seen that in $G(\omega)$ the convolution with the sinc function has the effect of amplifying some frequencies at the sides which were almost zero in the Gaussian version $H(\omega)$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Gaussian Filtering [4 points]}
+\begin{figure}[h!]
+    \centering
+\begin{tikzpicture}
+    \begin{axis}[
+      xlabel=Spatial sigma $\sigma_s$,
+      ylabel=Execution time (seconds),
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      height=10cm,
+      width=\textwidth]
+    \addplot table[x=x, y=y, mark=none] {./fig/out/benchmark.dat};
+    \addplot table[x=x, y=z, mark=none] {./fig/out/benchmark.dat};
+    \legend{Spatial filtering,Frequency filtering}
+    \end{axis}
+\end{tikzpicture}
+\caption{Benchmark comparing Gaussian filtering in the spatial domain vs in the frequency domain}
+\end{figure}
+
+
+
+\section{Image Restoration [4 points]}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}{0.27\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/out/7.img.png}
+        \includegraphics[width=\textwidth]{fig/out/7.img_fft.png}
+        \caption{Original image}
+    \end{subfigure}
+    \begin{subfigure}{0.27\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/out/7.res.png}
+        \includegraphics[width=\textwidth]{fig/out/7.res_fft.png}
+        \caption{Image with masked pattern}
+    \end{subfigure}
+    \caption{Comparison of different histogram equalization techniques.}
+\end{figure}
+
 
 
 
