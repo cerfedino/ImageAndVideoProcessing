@@ -91,7 +91,7 @@
 \newcommand\assignment{Assignment 3 - Frequency Domain Processing}
 
 \newcommand\subject{Image \& Video Processing}
-\newcommand\documentdate{30 April 2023}
+\newcommand\documentdate{15 May 2023}
 
 % Title content
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -480,11 +480,10 @@ Looking at the windowed filter in \autoref{fig:ex5}, we can express $g(x)$ as th
     \label{fig:ex5-Hw-Gw}
 \end{figure}
 
-\FIXME{plots}
 
 In \autoref{fig:ex5-Hw-Gw} we can see the Fourier transform of the original Gaussian filter $H(\omega)$ and its windowed version $G(\omega)$. It can be seen that in $G(\omega)$ the convolution with the sinc function has the effect of amplifying some frequencies at the sides which were almost zero in the Gaussian version $H(\omega)$.
 
-\clearpage
+\clearpage 
 \section{Gaussian Filtering [4 points]}
 \subsection{Equivalence of spatial and frequency domain filtering}
 In this exercise we have to implement Gaussian filtering both in the spatial and frequency domain. Namely, we want to show that convoluting a gaussian filter with $\sigma_s$ in the spatial domain is equivalent to performing point-wise multiplication in the fourier domain between the image spectrum and another gaussian filter with $\sigma_f = \frac{1}{2\sigma_s \pi}$.
@@ -639,11 +638,6 @@ We notice how the checkerboard pattern is oriented diagonally. That is the clear
 \end{figure}
 
 
-
-
-
-
-
 \section{Bonus}
 Suppose an image is to be up-scaled by a factor of 2.
 Firstly, the image is up-sampled as shown in \autoref{fig:ex6b}. The missing pixels can then be computed using two different interpolation methods: nearest neighbor (\autoref{fig:ex6c}) and linear interpolation (\autoref{fig:ex6d}).
@@ -700,28 +694,9 @@ $$\frac14\begin{bmatrix}
 \end{bmatrix}$$
 If the pixel in the center of the kernel is present, the resulting pixel will be the same as the center one. If instead the center pixel is missing, the resulting pixel will be the weighted average of the four surrounding existing pixels in the corners or the mean of the two pixels at the sides if the corner pixels are missing as well.
 
-\autoref{fig:ex8-intensitiesplot} shows the signal of a single row of the up-scaled image with the two methods. Because of linear interpolation, the linearly interpolated signal is the same as the original one, just stretched by a factor of 2. The nearest neighbor method instead results in a more noisy signal since the missing pixels are simply copied from the nearest existing ones. In the Fourier domain (\autoref{fig:ex8-intensitiesplot}) this results in the image up-scaled with nearest neighbor interpolation having more high frequencies while the image up-scaled with linear interpolation has the same frequencies as the original image.
-Thus, the ratio between the Fourier transforms of the linear interpolation up-scaled image and the nearest-neighbor up-scaled image will be 
-
-\begin{figure}[h!]
-    \centering
-\begin{tikzpicture}
-    \begin{axis}[
-      xlabel=Frequency $\omega$,
-      ylabel=Gain $A$,
-      legend pos=north west,
-      ymajorgrids=true,
-      grid style=dashed,
-      height=10cm,
-      width=\textwidth]
-    \addplot table[x=x, y=y, mark=none] {./fig/out/8.fourier.dat};
-    \addplot table[x=x, y=z, mark=none] {./fig/out/8.fourier.dat};
-    \legend{Nearest Neighbor,Linear Interpolation}
-    \end{axis}
-\end{tikzpicture}
-\caption{Fourier plot of the two interpolation methods.}
-\label{fig:ex8-intensitiesplot}
-\end{figure}
+\autoref{fig:ex8-intensitiesplot} shows the signal of a single row of the up-scaled image with the two methods. Because of linear interpolation, the linearly interpolated signal is the same as the original one, just stretched by a factor of 2. The nearest neighbor method instead results in a more noisy signal since the missing pixels are simply copied from the nearest existing ones, while in linear interpolation the pixel intensities follow a smoother curve.\\
+In the Fourier domain (\autoref{fig:ex8-fourierplot}) this results in the image up-scaled with nearest neighbor interpolation having more high frequencies while the image up-scaled with linear interpolation has the same frequencies as the original image.
+Thus, the ratio between the Fourier transforms of the linear interpolation up-scaled image and the nearest-neighbor up-scaled image will be close to 1 on lower frequencies (i.e the spectrums are almost identical) and will decrease for higher frequencies (i.e. the spectrum of the linearly interpolated image will have more energy on higher frequencies). This is confirmed by the plot in \autoref{fig:ex8-fourierplot}. Intuitively, it can be seen from the upscaled images that the linearly interpolated image is smoother than the nearest neighbor one, thus having less high frequencies.
 
 \begin{figure}[h!]
     \centering
@@ -741,6 +716,26 @@ Thus, the ratio between the Fourier transforms of the linear interpolation up-sc
 \end{tikzpicture}
 \caption{Pixel intensities for one image row of the two interpolation methods.}
 \label{fig:ex8-intensitiesplot}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+\begin{tikzpicture}
+    \begin{axis}[
+      xlabel=Frequency $\omega$,
+      ylabel=Gain $A$,
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      height=10cm,
+      width=\textwidth]
+    \addplot table[x=x, y=y, mark=none] {./fig/out/8.fourier.dat};
+    \addplot table[x=x, y=z, mark=none] {./fig/out/8.fourier.dat};
+    \legend{Nearest Neighbor,Linear Interpolation}
+    \end{axis}
+\end{tikzpicture}
+\caption{Fourier plot of the two interpolation methods.}
+\label{fig:ex8-fourierplot}
 \end{figure}
 
 

@@ -2,3 +2,4 @@
 
 ## Authors
 - Albert Cerfeda
+- Alessandro Gobbetti
