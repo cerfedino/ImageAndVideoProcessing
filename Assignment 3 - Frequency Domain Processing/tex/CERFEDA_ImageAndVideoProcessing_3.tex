@@ -151,7 +151,7 @@ Therefore we have shown that if $f(x,y) = g(x)\cdot g(y)$, then the Fourier tran
 
 
 \section{Theoretical exercise [2 points]}
-Compute Fourier transform $G(\mu)$ of function $g(x) = f(x)+f(-x)$, where $f(x)$ is the function plotted in \autoref{fig:1a}.
+We compute Fourier transform $G(\mu)$ of function $g(x) = f(x)+f(-x)$, where $f(x)$ is the function plotted in \autoref{fig:1a}.
 The function $g(x)$ is plotted in \autoref{fig:1b}.
 \begin{figure}[h]
     \centering
@@ -365,7 +365,7 @@ We should thus find a Gaussian kernel that does not overlap in the frequency dom
 \end{figure}
 
 
-Given that $\Delta T = c$ is in the spatial domain, it is $\Delta T = \frac{1}{c}$ in the Fourier domain. We can use the size of the Gaussian kernel when performing prefiltering on the image to impose a bound on the width of the image spectrum in order not to incur overlaps. 
+Given that $\Delta T = c$ is in the spatial domain, it is $\Delta T = \frac{1}{c}$ in the Fourier domain. We can use the size of the Gaussian kernel when performing prefiltering on the image to impose a bound on the width of the image spectrum in order not to incur into overlaps. 
 
 However, a little bit of overlap is not a problem, for this exercise, we can assume that the spatial frequencies which are attenuated by a filter with a factor smaller than 0.75 do not cause aliasing.
 We thus need to find the standard deviation $\sigma$ of the Gaussian kernel in the Fourier domain such that all the values are attenuated by a factor of at least 0.75.
@@ -501,28 +501,24 @@ Results are shown in \autoref{fig:ex6-spatial}.
     \item \textbf{Frequency domain}
 \begin{minted}[frame=lines, framesep=2mm, fontsize=\small ]{matlab} 
 function img2_filtered = frequencyGaussianFiltering(img, sigma_s)
-    % Convert image to frequency domain
-    %%% Pad image to solve periodicity problem
-    img2_pad = padarray(img,size(img),'post');
-    %%% Shift image
-    img2_pad = img2_pad .* (-1) .^((meshgrid(1:size(img2_pad,2), 1:size(img2_pad,1))) 
-        + meshgrid(1:size(img2_pad,1), 1:size(img2_pad,2)).');
     %%% Convert to frequency domain
-    img2_fft = fft2(img2_pad);
-    % Compute gaussian kernel for frequency domain
-    sigma_f = (1/(2*pi*sigma_s))*10000;
-    kernel_size_f = size(img2_pad);
-    gaussian_filter_frequency = fspecial('gaussian', kernel_size_f, sigma_f);
+    img2_fft = fft2(img);
+    % Shift lower frequencies to the center of fourier spectrum
+    img2_fft = fftshift(img2_fft);
+
+    % Computing gaussian filter
+    sigma_f = (1/(2*pi*sigma_s));
+    [X,Y]= meshgrid(-size(img,1)/2:size(img,1)/2-1,-size(img,2)/2:size(img,2)/2-1);
+    D = sqrt(X.^2 + Y.^2);
+    D = D/max(D(:));
+    D = exp(-D.^2/2/sigma_f^2);
+    D = D/max(D(:));
+    gaussian_filter_frequency = D;
+
     % Perform gaussian filtering in frequency domain
     img2_filtered_fft = img2_fft .* gaussian_filter_frequency;
-    %%% Bring image back to spatial domain
-    img2_filtered = ifft2(img2_filtered_fft);
-    %%% Shift image back
-    img2_filtered = img2_filtered .* (-1) .^((meshgrid(1:size(img2_filtered,2), 
-        1:size(img2_filtered,1))) + meshgrid(1:size(img2_filtered,1), 
-        1:size(img2_filtered,2)).');
-    %%% Crop image
-    img2_filtered = img2_filtered(1:size(img,1),1:size(img,2));
+    % Bring image back to spatial domain
+    img2_filtered = ifft2(ifftshift(img2_filtered_fft));
 end
 \end{minted}
 Results are shown in \autoref{fig:ex6-frequency}.
@@ -533,17 +529,17 @@ Results are shown in \autoref{fig:ex6-frequency}.
     \centering
     \begin{subfigure}{0.23\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig/out/6.img.png}
+        \includegraphics[width=.7\textwidth]{fig/out/6.img.png}
         \caption{Original image}
     \end{subfigure}
     \begin{subfigure}{0.23\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig/out/6.gaussian_filter_spatial.png}
+        \includegraphics[width=.7\textwidth]{fig/out/6.gaussian_filter_spatial.png}
         \caption{Spatial gaussian filter}
     \end{subfigure}
     \begin{subfigure}{0.23\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{fig/out/6.img_filtered.png}
+        \includegraphics[width=.7\textwidth]{fig/out/6.img_filtered.png}
         \caption{Filtered image}
     \end{subfigure}
     \caption{Gaussian filtering pipeline in the spatial domain}
@@ -553,9 +549,9 @@ Results are shown in \autoref{fig:ex6-frequency}.
     \centering
     \begin{subfigure}{0.32\textwidth}
         \centering
-        \includegraphics[width=.5\textwidth]{fig/out/6.img2.png}
+        \includegraphics[width=.5\textwidth]{fig/out/6.img.png}
         \includegraphics[width=.5\textwidth]{fig/out/6.img2_fft.png}
-        \caption{Original padded and shifted image}
+        \caption{Original shifted image}
     \end{subfigure}
     \begin{subfigure}{0.32\textwidth}
         \centering
@@ -586,8 +582,8 @@ There are a couple of important remarks to make. We notice how the computational
       grid style=dashed,
       height=10cm,
       width=\textwidth]
-    \addplot table[x=x, y=y, mark=none] {./fig/out/benchmark.dat};
-    \addplot table[x=x, y=z, mark=none] {./fig/out/benchmark.dat};
+    \addplot table[x=x, y=y, mark=none] {./fig/out/6.benchmark.dat};
+    \addplot table[x=x, y=z, mark=none] {./fig/out/6.benchmark.dat};
     \legend{Spatial filtering,Frequency filtering}
     \end{axis}
 \end{tikzpicture}
@@ -640,6 +636,111 @@ We notice how the checkerboard pattern is oriented diagonally. That is the clear
     \end{subfigure}
     \caption{Comparison of different histogram equalization techniques.}
     \label{fig:ex7}
+\end{figure}
+
+
+
+
+
+
+
+\section{Bonus}
+Suppose an image is to be up-scaled by a factor of 2.
+Firstly, the image is up-sampled as shown in \autoref{fig:ex6b}. The missing pixels can then be computed using two different interpolation methods: nearest neighbor (\autoref{fig:ex6c}) and linear interpolation (\autoref{fig:ex6d}).
+
+
+
+\begin{figure}[H]
+    \vspace*{-1cm}
+    \centering
+    \begin{subfigure}{0.24\linewidth}
+        \centering
+        \phantom{\includegraphics[width=.5\linewidth]{./fig/out/8.cameraman_crop.png}}
+        \raisebox{.5\height}{\includegraphics[width=.5\linewidth]{./fig/out/8.cameraman_crop.png}}
+        \caption{Original image}
+        \label{fig:ex6a}
+    \end{subfigure}
+    \begin{subfigure}{0.24\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{./fig/out/8.cameraman_up.png}
+        \caption{Up-sampled image}
+        \label{fig:ex6b}
+    \end{subfigure}
+    \begin{subfigure}{0.24\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{./fig/out/8.cameraman_nn.png}
+        \caption{Nearest neighbor}
+        \label{fig:ex6c}
+    \end{subfigure}
+    \begin{subfigure}{0.24\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{./fig/out/8.cameraman_l.png}
+        \caption{Linear interpolation}
+        \label{fig:ex6d}
+    \end{subfigure}
+    \caption{Up-scaling an image by a factor of 2.}
+    \label{fig:ex6}
+\end{figure}
+
+The nearest neighbor method simply copies the value of the nearest pixel to the missing one. The method works by convolving the image with the following kernel:
+
+$$\begin{bmatrix}
+1 & 1 & 0 \\
+1 & 1 & 0 \\
+0 & 0 & 0 \\
+\end{bmatrix}$$
+Because of how the up-sampled image is constructed, if the pixel in the center of the kernel is present, the surrounding pixels will be missing and thus the resulting pixel will be the same as the center one. If instead the center pixel is missing, only one of the surrounding pixels will be present and thus used as the value of the missing pixel.
+
+
+The linear interpolation method instead computes the value of the missing pixel as the weighted average of the four nearest pixels. The method works by convolving the image with the following kernel:
+$$\frac14\begin{bmatrix}
+    1 & 2 & 1 \\
+    2 & 4 & 2 \\
+    1 & 2 & 1 \\
+\end{bmatrix}$$
+If the pixel in the center of the kernel is present, the resulting pixel will be the same as the center one. If instead the center pixel is missing, the resulting pixel will be the weighted average of the four surrounding existing pixels in the corners or the mean of the two pixels at the sides if the corner pixels are missing as well.
+
+\autoref{fig:ex8-intensitiesplot} shows the signal of a single row of the up-scaled image with the two methods. Because of linear interpolation, the linearly interpolated signal is the same as the original one, just stretched by a factor of 2. The nearest neighbor method instead results in a more noisy signal since the missing pixels are simply copied from the nearest existing ones. In the Fourier domain (\autoref{fig:ex8-intensitiesplot}) this results in the image up-scaled with nearest neighbor interpolation having more high frequencies while the image up-scaled with linear interpolation has the same frequencies as the original image.
+Thus, the ratio between the Fourier transforms of the linear interpolation up-scaled image and the nearest-neighbor up-scaled image will be 
+
+\begin{figure}[h!]
+    \centering
+\begin{tikzpicture}
+    \begin{axis}[
+      xlabel=Frequency $\omega$,
+      ylabel=Gain $A$,
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      height=10cm,
+      width=\textwidth]
+    \addplot table[x=x, y=y, mark=none] {./fig/out/8.fourier.dat};
+    \addplot table[x=x, y=z, mark=none] {./fig/out/8.fourier.dat};
+    \legend{Nearest Neighbor,Linear Interpolation}
+    \end{axis}
+\end{tikzpicture}
+\caption{Fourier plot of the two interpolation methods.}
+\label{fig:ex8-intensitiesplot}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+\begin{tikzpicture}
+    \begin{axis}[
+      xlabel=Pixel position $x$ in the image row,
+      ylabel=Intensity $I$,
+      legend pos=north west,
+      ymajorgrids=true,
+      grid style=dashed,
+      height=10cm,
+      width=\textwidth]
+    \addplot table[x=x, y=y, mark=none] {./fig/out/8.intensities.dat};
+    \addplot table[x=x, y=z, mark=none] {./fig/out/8.intensities.dat};
+    \legend{Nearest Neighbor,Linear Interpolation}
+    \end{axis}
+\end{tikzpicture}
+\caption{Pixel intensities for one image row of the two interpolation methods.}
+\label{fig:ex8-intensitiesplot}
 \end{figure}
 
 
