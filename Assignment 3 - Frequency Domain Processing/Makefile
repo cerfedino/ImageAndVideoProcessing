@@ -1,5 +1,5 @@
 .PHONY: $(MAKECMDGOALS)
-FILES := src/ex6.m src/ex7.m
+FILES := src/ex6.m src/ex7.m src/exBonus.m
 
 QUIT=$(if $(filter 1,$(quit)),quit;)
 
