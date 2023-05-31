@@ -1,7 +1,6 @@
 
 % 1. Load image
-img = imread('media/queen.jpg');
-img = im2double(img);
+img = im2double(imread('media/queen.jpg'));
 
 % 2. Convert to XYZ
 img_xyz = rgb2xyz(img);
