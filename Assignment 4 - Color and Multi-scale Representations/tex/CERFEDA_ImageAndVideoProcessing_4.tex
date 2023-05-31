@@ -55,7 +55,156 @@
    \end{center}
 \end{titlepage}
 
+\section{Color Palette Extraction from Images [7 points]}
+\subsection{Linear RGB and sRGB Color Palettes}
 
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[]{\linewidth}
+        \centering
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_1.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_2.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_3.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_4.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_5.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_6.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_palette_7.png}\\
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_1.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_2.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_3.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_4.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_5.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_6.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.rgb_layer_7.png}
+        \caption{RGB Palette and Layers}
+        \label{fig:1.1.rgb_palette_layers}
+    \end{subfigure}
+    \begin{subfigure}[]{\linewidth}
+        \centering
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_1.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_2.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_3.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_4.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_5.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_6.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_palette_7.png}\\
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_1.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_2.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_3.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_4.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_5.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_6.png}
+        \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_7.png}
+        \caption{sRGB Palette and Layers}
+        \label{fig:1.1.xyz_palette_layers}
+    \end{subfigure}
+    \begin{subfigure}[]{0.25\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/1.1.rgb_clustered.png}
+        \caption{RGB Clustered image}
+        \label{fig:1.1.rgb_clustered}
+    \end{subfigure}
+    \begin{subfigure}[]{0.25\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/1.1.xyz_clustered.png}
+        \caption{sRGB Clustered image}
+        \label{fig:1.1.xyz_clustered}
+    \end{subfigure}
+\end{figure}
+
+
+\subsection{CIELab Color Palette}
+
+
+\section{Color Quantization and lookup tables (LUTs) [3 points]}
+
+
+\section{Gaussian and Laplacian Pyramids [4 points]}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[]{.7\linewidth}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_gaussian_pyramid_1.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_gaussian_pyramid_2.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_gaussian_pyramid_3.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_gaussian_pyramid_4.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_gaussian_pyramid_5.png}
+        \caption{Gaussian Pyramid layers}
+    \end{subfigure}
+    \begin{subfigure}[]{.7\linewidth}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_1.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_2.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_3.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_4.png}
+        \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_5.png}     
+        \caption{Laplacian Pyramid layers}   
+    \end{subfigure}
+    \caption{Image pyramid decomposition of \texttt{happy.jpg}}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Hybrid Images [3 points]}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[]{\linewidth}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(0.5).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(1.0).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(1.5).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(3.0).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(3.5).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(4.0).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(4.5).jpg}
+        \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(5.0).jpg}
+    \end{subfigure}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[]{.8\linewidth}
+        \begin{subfigure}[]{.25\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+        \begin{subfigure}[]{.2\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+        \begin{subfigure}[]{.16\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+        \begin{subfigure}[]{.128\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+        \begin{subfigure}[]{.1024\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+        \begin{subfigure}[]{.08192\linewidth}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+        \end{subfigure}
+
+    \end{subfigure}
+\end{figure}
+\section{Theory: Hybrid Images [3 points]}
+
+
+\section{Bonus: Create your own Instagram Filter! [10 points]}
 
 
 
