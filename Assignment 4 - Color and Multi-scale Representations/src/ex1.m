@@ -1,3 +1,4 @@
+rng(3);
 
 % 1. Load image
 img = im2double(imread('media/queen.jpg'));
@@ -42,7 +43,7 @@ for i = 1:n_clusters
     xyz_layer = xyz2rgb(xyz_layers{i});
 
     imwrite(xyz_color, sprintf('out/1.1.xyz_palette_%d.png', i));
-    imwrite(xyz_layer, sprintf('out/1.1.xyz_layers%d.png', i));
+    imwrite(xyz_layer, sprintf('out/1.1.xyz_layer_%d.png', i));
 
     subplot(2, n_clusters, i);
     imshow(xyz_color);
