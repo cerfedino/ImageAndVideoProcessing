@@ -16,7 +16,7 @@ sad_reconstructed = reconstruct_from_laplacian(sad_laplacian_pyramid);
 
 
 
-layers = layers + 1
+layers = layers + 1;
 % 3. Plot and save results
 figure("Name","Pyramid layers for happy.jpg");
 for i = 1:layers
@@ -28,7 +28,7 @@ for i = 1:layers
     title(['Laplacian Pyramid Layer ',num2str(i)]);
 
     imwrite(happy_gaussian_pyramid{i},['out/3.happy_gaussian_pyramid_',num2str(i),'.png']);
-    imwrite(happy_laplacian_pyramid{i},['out/3.happy_laplacian_pyramid_',num2str(i),'.png']);
+    imwrite(happy_laplacian_pyramid{i} .* 0.7 + 0.5,['out/3.happy_laplacian_pyramid_',num2str(i),'.png']);
 end
 figure("Name","Pyramid layers for sad.jpg");
 for i = 1:layers
@@ -40,7 +40,7 @@ for i = 1:layers
     title(['Laplacian Pyramid Layer ',num2str(i)]);
 
     imwrite(sad_gaussian_pyramid{i},['out/3.sad_gaussian_pyramid_',num2str(i),'.png']);
-    imwrite(sad_laplacian_pyramid{i},['out/3.sad_laplacian_pyramid_',num2str(i),'.png']);
+    imwrite(sad_laplacian_pyramid{i}.* 0.7 + 0.5,['out/3.sad_laplacian_pyramid_',num2str(i),'.png']);
 end
 
 imwrite(happy_reconstructed,'out/3.happy_reconstructed.png');
@@ -83,6 +83,7 @@ function [img] = reconstruct_from_laplacian(laplacian_pyramid)
     layers = size(laplacian_pyramid,2);
     img = laplacian_pyramid{layers};
     for i = layers-1:-1:1
-        img = imresize(img,[size(laplacian_pyramid{i},1),size(laplacian_pyramid{i},2)],'nearest') + laplacian_pyramid{i};
+        img = imresize(img,[size(laplacian_pyramid{i},1),size(laplacian_pyramid{i},2)],'nearest') ...
+                + laplacian_pyramid{i};
     end
 end

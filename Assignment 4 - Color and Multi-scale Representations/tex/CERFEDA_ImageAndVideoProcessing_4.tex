@@ -59,6 +59,15 @@
 \subsection{Linear RGB and sRGB Color Palettes}
 
 \begin{figure}[h!]
+    \vspace*{-0.2cm}
+    \inputminted[firstline=90, frame=lines, framesep=2mm, fontsize=\small ]{matlab}{../src/ex1.m}
+    \vspace*{-0.5cm}
+    \caption{Matlab code performing color quantization}
+\end{figure}
+
+
+
+\begin{figure}[h!]
     \centering
     \begin{subfigure}[]{\linewidth}
         \centering
@@ -96,7 +105,7 @@
         \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_6.png}
         \includegraphics[width=0.13\linewidth]{fig/out/1.1.xyz_layer_7.png}
         \caption{sRGB Palette and Layers}
-        \label{fig:1.1.xyz_palette_layers}
+        \label{fig:1.1.srgb_palette_layers}
     \end{subfigure}
     \begin{subfigure}[]{0.25\linewidth}
         \includegraphics[width=\linewidth]{fig/out/1.1.rgb_clustered.png}
@@ -106,8 +115,9 @@
     \begin{subfigure}[]{0.25\linewidth}
         \includegraphics[width=\linewidth]{fig/out/1.1.xyz_clustered.png}
         \caption{sRGB Clustered image}
-        \label{fig:1.1.xyz_clustered}
+        \label{fig:1.1.srgb_clustered}
     \end{subfigure}
+    \caption{Color palette extraction using the RGB and sRGB color spaces.}
 \end{figure}
 
 
@@ -115,9 +125,41 @@
 
 
 \section{Color Quantization and lookup tables (LUTs) [3 points]}
+\begin{figure}
+    \begin{subfigure}[]{0.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/2.img.png}
+        \caption{Original image}
+        \label{fig:2.img}
+    \end{subfigure}
+    \begin{subfigure}[]{0.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/2.hsv.png}
+        \caption{HSV color space}
+        \label{fig:2.hsv}
+    \end{subfigure}
+    \begin{subfigure}[]{0.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/2.lab.png}
+        \caption{CIELab color space}
+        \label{fig:2.lab}
+    \end{subfigure}
+    \begin{subfigure}[]{0.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/2.gray.png}
+        \caption{Grayscale-mapped}
+        \label{fig:2.gray}
+    \end{subfigure}
+    \caption{Quantized images with 32 clusters (colors) in different color spaces}
+    \label{fig:2}
+\end{figure}
+
 
 
 \section{Gaussian and Laplacian Pyramids [4 points]}
+
+\begin{figure}[h!]
+    \vspace*{-0.2cm}
+    \inputminted[firstline=57, frame=lines, framesep=2mm, fontsize=\small ]{matlab}{../src/ex3.m}
+    \vspace*{-0.5cm}
+    \caption{Matlab functions computing the Gaussian and Laplacian pyramids and reconstructing the original image.}
+\end{figure}
 
 \begin{figure}[h!]
     \centering
@@ -135,26 +177,10 @@
         \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_3.png}
         \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_4.png}
         \includegraphics[height=0.3\linewidth]{fig/out/3.happy_laplacian_pyramid_5.png}     
-        \caption{Laplacian Pyramid layers}   
+        \caption{Laplacian Pyramid layers (brightness artifically increased)}
     \end{subfigure}
     \caption{Image pyramid decomposition of \texttt{happy.jpg}}
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -175,37 +201,75 @@
         \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(4.5).jpg}
         \includegraphics[width=.09\linewidth]{fig/out/4.hybrid_sigma(5.0).jpg}
     \end{subfigure}
+    \caption{Hybrid images with different $\sigma$ values. Lower-Higher $\sigma$ from left to right.}
+    \label{fig:4.hybrids}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \begin{subfigure}[]{.8\linewidth}
         \begin{subfigure}[]{.25\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
         \begin{subfigure}[]{.2\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
         \begin{subfigure}[]{.16\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
         \begin{subfigure}[]{.128\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
         \begin{subfigure}[]{.1024\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
         \begin{subfigure}[]{.08192\linewidth}
-            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.0).jpg}
+            \includegraphics[width=\linewidth]{fig/out/4.hybrid_sigma(2.5).jpg}
         \end{subfigure}
-
     \end{subfigure}
+    \caption{Showcase of frequency band sensitivity of the human visual system related to the image size.}
+    \label{fig:4.showcase}
 \end{figure}
 \section{Theory: Hybrid Images [3 points]}
 
 
 \section{Bonus: Create your own Instagram Filter! [10 points]}
 
+
+\begin{figure}[h!]
+    \vspace*{-0.2cm}
+    \inputminted[firstline=15, frame=lines, framesep=2mm, fontsize=\small ]{matlab}{../src/ex6.m}
+    \vspace*{-0.5cm}
+    \caption{Matlab function applying the \textit{Borderlands 2} filter.}
+\end{figure}
+
+\begin{figure}[h!]
+    % \vspace*{-0.8cm}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[t]{.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/6.img.jpg}
+        \caption{1. Original image}
+        \label{fig:6.img}
+    \end{subfigure}
+    \begin{subfigure}[t]{.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/6.img_clustered.jpg}
+        \caption{2. Quantized image}
+        \label{fig:6.img_clustered}
+    \end{subfigure}
+    \begin{subfigure}[t]{.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/6.img_clustered_edges.jpg}
+        \caption{3. Edges of quantized image}
+        \label{fig:6.img_clustered_edges}
+    \end{subfigure}
+    \begin{subfigure}[t]{.245\linewidth}
+        \includegraphics[width=\linewidth]{fig/out/6.im_stylized.jpg}
+        \caption{4. Masked and saturated final image}
+        \label{fig:6.im_stylized}
+    \end{subfigure}
+\end{figure}
 
 
 \end{document}

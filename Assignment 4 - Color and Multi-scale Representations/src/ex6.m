@@ -13,7 +13,6 @@ imwrite(im2uint8(im_stylized), "./out/6.im_stylized.jpg");
 
 
 function [img, img_clustered, edges, im_stylized] = filter(img)
-
     % 1. Cluster the image colors
     clusters = 16;
     [img_clustered, cluster_idx, cluster_center ] = clusterColors(img, clusters);
@@ -29,17 +28,13 @@ function [img, img_clustered, edges, im_stylized] = filter(img)
     im_stylized(:, :, 2) = im_stylized(:, :, 2)*1.5;
     im_stylized = hsv2rgb(im_stylized);
 
-
-
     edges = gray2rgb(edges, img);
     imshow([img, img_clustered, edges, im_stylized], []);
 
-
     function [img_clustered, cluster_idx, cluster_center ] = clusterColors(img, n_clusters)
-        % 1. Cluster
+        % Cluster
         A = reshape(img, [], 3);
-        [cluster_idx, cluster_center] = kmeans(A, n_clusters);
-        
+        [cluster_idx, cluster_center] = kmeans(A, n_clusters);     
         % Compute clustered image
         img_clustered = reshape(cluster_center(cluster_idx, :), size(img, 1), size(img, 2), 3);
     end
