@@ -1,3 +1,5 @@
+rng(42); % seed
+
 img = im2double(imread("./media/queen.jpg"));
 
 [img, img_clustered, edges, im_stylized] = filter(img);

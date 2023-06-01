@@ -1,4 +1,4 @@
-rng(3);
+rng(42); % seed
 
 % 1. Load image
 img = im2double(imread('media/queen.jpg'));
@@ -109,7 +109,7 @@ function [img_clustered, img_palette, img_layers] = clusterColors(img, n_cluster
         color_square(:,:,3) = repmat(color(3), size(img, 1), size(img, 2));
         layer = color_square .* (cluster_idx == i);
         
-        img_palette{i} = color_square;
-        img_layers{i} = layer;    
+        img_palette{i} = color_square(1,1,:);
+        img_layers{i} = layer;
     end
 end
