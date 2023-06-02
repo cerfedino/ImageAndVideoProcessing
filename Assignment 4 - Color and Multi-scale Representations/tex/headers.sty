@@ -1,0 +1,83 @@
+% Math
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{dsfont}
+\usepackage{float}
+
+% Insert dummy text
+\usepackage{lipsum}  
+% Allows to use caption*
+\usepackage{caption}
+% Scalable subfigures and subcaptions
+\usepackage{subcaption} 
+% Wrap text around figures
+\usepackage{wrapfig}
+% Code syntax highlighting
+\usepackage{minted}
+
+% Define a color
+\usepackage{xcolor}
+%  Red
+\definecolor{ACCENT}{HTML}{E74C3C}
+\definecolor{REFERENCES}{HTML}{E74C3C}
+\definecolor{URL}{HTML}{E74C3C}
+\definecolor{CITATION}{HTML}{E74C3C}
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    bookmarksopen=true,
+    bookmarksopenlevel=0,
+    hypertexnames=false,
+    colorlinks=true,% Set to false to disable coloring links
+    citecolor=CITATION,% The color of citations
+    linkcolor=REFERENCES,% The color of references to document elements (sections, figures, etc)
+    urlcolor=URL,% The color of hyperlinks (URLs)
+    pdfstartview={FitV},
+    unicode,
+    breaklinks=true,
+}
+\newcommand\anonref[1]{\hyperref[#1]{\textsuperscript{\#}}}
+\newcommand\exthref[2] {\href{#1}{\faicon{share-square-o} #2}}
+
+% "Figure X" refs
+\usepackage{cleveref}
+
+% includegraphics
+\usepackage{graphicx}
+
+% Use icons
+\usepackage{fontawesome}
+
+
+
+
+
+% Customize page layout
+\usepackage{geometry}
+\geometry{a4paper, margin=0.7in}
+% Page headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5\baselineskip}%
+
+% includegraphics
+\usepackage{graphicx}
+
+
+
+% Easy matrices
+\newcommand{\bmat}[1]{
+   \ensuremath{
+   \begin{bmatrix}
+       #1
+   \end{bmatrix}
+}}
+\newcommand{\pmat}[1]{
+   \ensuremath{
+   \begin{pmatrix}
+       #1
+   \end{pmatrix}
+}}
