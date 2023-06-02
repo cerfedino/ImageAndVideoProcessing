@@ -6,9 +6,62 @@ img = im2double(imread('media/queen.jpg'));
 % 2. Convert to XYZ
 img_xyz = rgb2xyz(img);
 
+% 3. Convert to CIELab
+img_lab = rgb2lab(img);
+
+
 n_clusters = 7;
 [rgb_clustered, rgb_palette, rgb_layers] = clusterColors(img, n_clusters);
 [xyz_clustered, xyz_palette, xyz_layers] = clusterColors(img_xyz, n_clusters);
+[lab_clustered, lab_palette, lab_layers] = clusterColors(img_lab, n_clusters);
+
+
+
+% modify single layers
+lab_layers_edited = lab_layers;
+
+% convert all layers to rgb
+for i = 1:n_clusters
+    lab_layers_edited{i} = lab2rgb(lab_layers_edited{i});
+end
+
+% change hue on first layer
+%% Jacket
+lab_layers_edited{1} = rgb2hsv(lab_layers_edited{1});
+lab_layers_edited{1}(:,:,1) = mod(lab_layers_edited{1}(:,:,1) + 0.4, 1);
+lab_layers_edited{1} = hsv2rgb(lab_layers_edited{1});
+
+lab_layers_edited{6} = rgb2hsv(lab_layers_edited{6});
+lab_layers_edited{6}(:,:,1) = mod(lab_layers_edited{6}(:,:,1) + 0.4, 1);
+lab_layers_edited{6}(:,:,3) = lab_layers_edited{6}(:,:,3)*0.7;
+lab_layers_edited{6} = hsv2rgb(lab_layers_edited{6});
+
+lab_layers_edited{5} = rgb2hsv(lab_layers_edited{5});
+lab_layers_edited{5}(:,:,1) = mod(lab_layers_edited{5}(:,:,1) + 0.4, 1);
+lab_layers_edited{5} = hsv2rgb(lab_layers_edited{5});
+
+%% Skin
+lab_layers_edited{3} = rgb2hsv(lab_layers_edited{3});
+lab_layers_edited{3}(:,:,1) = mod(lab_layers_edited{3}(:,:,1) + 0.25, 1);
+lab_layers_edited{3} = hsv2rgb(lab_layers_edited{3});
+
+lab_layers_edited{2} = rgb2hsv(lab_layers_edited{2});
+lab_layers_edited{2}(:,:,1) = mod(lab_layers_edited{2}(:,:,1) + 0.25, 1);
+lab_layers_edited{2}(:,:,3) = lab_layers_edited{2}(:,:,3)*0.5;
+lab_layers_edited{2} = hsv2rgb(lab_layers_edited{2});
+
+
+% combine layers
+lab_clustered_edited = zeros(size(img_lab));
+for i = 1:n_clusters
+    lab_clustered_edited = lab_clustered_edited + lab_layers_edited{i};
+end
+
+% display edited image
+figure('Name', 'Edited image');
+imshow(lab_clustered_edited);
+imwrite(lab_clustered_edited, 'out/1.2.lab_clustered_edited.png');
+
 
 
 
@@ -52,6 +105,26 @@ for i = 1:n_clusters
 end
 hold off;
 
+% 5.3 Plot Lab results
+lab_clustered = lab2rgb(lab_clustered);
+imwrite(lab_clustered, 'out/1.2.lab_clustered.png');
+figure('Name', 'Lab Clustered image');
+imshow(lab_clustered);
+figure('Name', 'Lab Palette');
+hold on;
+for i = 1:n_clusters
+    lab_color = lab2rgb(lab_palette{i});
+    lab_layer = lab2rgb(lab_layers{i});
+
+    imwrite(lab_color, sprintf('out/1.2.lab_palette_%d.png', i));
+    imwrite(lab_layer, sprintf('out/1.2.lab_layer_%d.png', i));
+
+    subplot(2, n_clusters, i);
+    imshow(lab_color);
+    subplot(2, n_clusters, i + n_clusters);
+    imshow(lab_layer);
+end
+hold off;
 
 
 
@@ -63,7 +136,6 @@ function [img_xyz] = rgb2xyz(img_rgb)
     mat = [0.4124564 0.3575761 0.1804375;
            0.2126729 0.7151522 0.0721750;
            0.0193339 0.1191920 0.9503041];
-    % TODO: bleah
     for i = 1:size(img_rgb, 1)
         for j = 1:size(img_rgb, 2)
             rgb = img_rgb(i, j, :);
@@ -77,7 +149,6 @@ function [img_rgb] = xyz2rgb(img_xyz)
     mat = inv([0.4124564 0.3575761 0.1804375;
            0.2126729 0.7151522 0.0721750;
            0.0193339 0.1191920 0.9503041]);
-    % TODO: bleah
     for i = 1:size(img_xyz, 1)
         for j = 1:size(img_xyz, 2)
             xyz = img_xyz(i, j, :);

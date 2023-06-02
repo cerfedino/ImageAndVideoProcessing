@@ -15,7 +15,6 @@ sad_reconstructed = reconstruct_from_laplacian(sad_laplacian_pyramid);
 
 
 
-
 layers = layers + 1;
 % 3. Plot and save results
 figure("Name","Pyramid layers for happy.jpg");
@@ -43,6 +42,7 @@ for i = 1:layers
     imwrite(sad_laplacian_pyramid{i}.* 0.7 + 0.5,['out/3.sad_laplacian_pyramid_',num2str(i),'.png']);
 end
 
+imwrite(img_happy,'out/3.happy.png');
 imwrite(happy_reconstructed,'out/3.happy_reconstructed.png');
 imwrite(sad_reconstructed,'out/3.sad_reconstructed.png');
 
